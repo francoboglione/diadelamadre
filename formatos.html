@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Elegí el formato</title>
+<meta name="description" content="Cuatro formatos animados para contarle a mamá su historia en cinco capítulos. Gratis, de código abierto, para celular y compu.">
+<meta property="og:title" content="Una historia para mamá · 4 formatos gratis">
+<meta property="og:description" content="Fotos, cinco capítulos y la canción que elijas. Código abierto, licencia MIT.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23c2456f' d='M12 21s-7.5-4.6-9.6-9.2C.9 8.5 2.6 4.5 6.4 4.1c2.2-.2 4 .9 5.6 3 1.6-2.1 3.4-3.2 5.6-3 3.8.4 5.5 4.4 4 7.7C19.5 16.4 12 21 12 21z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{--papel:#fbf5ef;--tinta:#2b1720;--suave:#6f5560;--rosa:#c2456f;--rosa2:#f3c9c3;--linea:rgba(43,23,32,.12);color-scheme:light}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--papel);color:var(--tinta);font:16px/1.55 "Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+img{display:block;max-width:100%}
+.w{max-width:1180px;margin:0 auto;padding:0 16px;padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
+.serif{font-family:"Instrument Serif",Georgia,"Times New Roman",serif;font-weight:400}
+.eye{margin:0;font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--rosa)}
+
+/* portada */
+.hero{padding:56px 0 34px;text-align:center}
+.hero h1{margin:14px auto 0;font-size:46px;font-size:clamp(44px,11vw,92px);line-height:.98;letter-spacing:-.01em;max-width:11em}
+.hero h1 em{color:var(--rosa)}
+.hero p.baj{margin:20px auto 0;max-width:34em;font-size:17px;color:var(--suave)}
+.chips{margin-top:22px;display:flex;flex-wrap:wrap;justify-content:center}
+.chip{margin:4px;padding:7px 12px;border-radius:999px;background:#fff;box-shadow:inset 0 0 0 1px var(--linea);font-size:13px;font-weight:500}
+
+/* tarjetas de formato */
+.grilla{display:grid;grid-template-columns:1fr;gap:20px;padding:22px 0 10px}
+@media (min-width:640px){.grilla{grid-template-columns:1fr 1fr}}
+@media (min-width:1080px){.grilla{grid-template-columns:repeat(4,1fr)}}
+.fmt{position:relative;background:#fff;border-radius:22px;padding:18px 18px 20px;box-shadow:0 1px 0 rgba(43,23,32,.04),0 18px 40px -26px rgba(43,23,32,.35);display:flex;flex-direction:column;opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
+.fmt.in{opacity:1;transform:none}
+.fmt:nth-child(2){transition-delay:.08s}.fmt:nth-child(3){transition-delay:.16s}.fmt:nth-child(4){transition-delay:.24s}
+.tel{position:relative;width:76%;max-width:240px;margin:6px auto 18px;padding:7px;border-radius:30px;background:#1b1116;box-shadow:0 24px 44px -22px rgba(43,23,32,.6)}
+.tel .pant{position:relative;border-radius:24px;overflow:hidden;background:#000;padding-top:216.4%}
+.tel .pant img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.1s ease}
+.tel .pant img.on{opacity:1}
+.tel .isla{position:absolute;z-index:2;top:14px;left:50%;width:30%;height:14px;margin-left:-15%;border-radius:10px;background:#1b1116}
+.puntos{position:absolute;z-index:2;left:0;right:0;bottom:12px;display:flex;justify-content:center}
+.puntos i{width:6px;height:6px;margin:0 3px;border-radius:50%;background:rgba(255,255,255,.45);transition:background .4s,transform .4s}
+.puntos i.on{background:#fff;transform:scale(1.25)}
+.num{position:absolute;top:14px;left:18px;font-family:"Instrument Serif",Georgia,serif;font-size:34px;line-height:1;color:var(--rosa2)}
+.fmt h2{margin:2px 0 0;font-size:38px;line-height:1}
+.fmt .que{margin:8px 0 0;color:var(--suave);font-size:15px;flex:1}
+.tags{margin:14px 0 0;display:flex;flex-wrap:wrap}
+.tag{margin:0 6px 6px 0;padding:4px 9px;border-radius:999px;background:var(--papel);font-size:12px;font-weight:500;color:var(--suave)}
+.acc{margin-top:12px;display:flex}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 18px;border-radius:999px;font-weight:600;font-size:15px;text-decoration:none;background:var(--tinta);color:#fff;flex:1}
+.btn.sec{background:transparent;color:var(--tinta);box-shadow:inset 0 0 0 1.5px var(--linea);margin-left:8px;flex:0 0 auto}
+.btn:focus-visible{outline:2px solid var(--rosa);outline-offset:3px}
+.rec{position:absolute;z-index:3;top:16px;right:16px;box-shadow:0 4px 12px -4px rgba(194,69,111,.6);padding:5px 10px;border-radius:999px;background:var(--rosa);color:#fff;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+
+/* compu */
+.seccion{padding:64px 0 10px}
+.seccion h2.t{margin:10px 0 0;font-size:40px;font-size:clamp(36px,7vw,58px);line-height:1}
+.seccion p.l{margin:12px 0 0;color:var(--suave);max-width:36em}
+.compus{margin-top:26px;display:grid;grid-template-columns:1fr;gap:18px}
+@media (min-width:760px){.compus{grid-template-columns:1fr 1fr}}
+.pc{margin:0}
+.pc .marco{border-radius:14px;overflow:hidden;background:#1b1116;padding:8px 8px 0;box-shadow:0 22px 40px -24px rgba(43,23,32,.55)}
+.pc .marco img{border-radius:6px 6px 0 0;width:100%;height:auto}
+.pc figcaption{margin-top:10px;font-size:14px;color:var(--suave)}
+.pc figcaption b{color:var(--tinta)}
+
+/* pasos */
+.pasos{margin-top:26px;display:grid;grid-template-columns:1fr;gap:14px;counter-reset:p}
+@media (min-width:760px){.pasos{grid-template-columns:repeat(3,1fr)}}
+.paso{background:#fff;border-radius:18px;padding:22px;box-shadow:inset 0 0 0 1px var(--linea)}
+.paso::before{counter-increment:p;content:counter(p);display:block;font-family:"Instrument Serif",Georgia,serif;font-size:44px;line-height:1;color:var(--rosa)}
+.paso h3{margin:10px 0 0;font-size:18px}
+.paso p{margin:8px 0 0;color:var(--suave);font-size:15px}
+.paso code{font-size:13px;background:var(--papel);padding:1px 6px;border-radius:5px}
+
+/* historia */
+.arco{margin-top:26px;display:grid;grid-template-columns:1fr;gap:10px}
+@media (min-width:760px){.arco{grid-template-columns:repeat(5,1fr)}}
+.cap{position:relative;padding:18px;border-radius:16px;background:linear-gradient(160deg,#fff,#fff6f2);box-shadow:inset 0 0 0 1px var(--linea);overflow:hidden}
+.cap .n{font-family:"Instrument Serif",Georgia,serif;font-size:15px;color:var(--rosa)}
+.cap h3{margin:4px 0 0;font-family:"Instrument Serif",Georgia,serif;font-weight:400;font-size:26px;line-height:1.05}
+.cap p{margin:8px 0 0;font-size:14px;color:var(--suave)}
+.cap .barra{position:absolute;left:0;bottom:0;height:4px;background:var(--rosa)}
+
+footer{margin-top:70px;padding:34px 0 50px;border-top:1px solid var(--linea);font-size:14px;color:var(--suave)}
+footer a{color:var(--tinta)}
+
+@media (prefers-reduced-motion:reduce){.fmt{opacity:1;transform:none;transition:none}.tel .pant img{transition:none}}
+</style>
+</head>
+<body>
+
+<header class="hero w">
+  <p class="eye">Día de la Madre · código abierto</p>
+  <h1 class="serif">Su historia, en <em>cinco capítulos</em> y con su canción</h1>
+  <p class="baj">Elegí un formato, poné tus fotos y escribí cinco frases. Te queda una página animada para mandarle por WhatsApp. Gratis, sin registro y sin servidor.</p>
+  <div class="chips"><span class="chip">📱 iPhone y Android</span><span class="chip">💻 También en compu</span><span class="chip">🎵 Tu canción de fondo</span><span class="chip">⚖️ Licencia MIT</span></div>
+</header>
+
+<main class="w">
+  <section class="grilla" aria-label="Formatos">
+    <article class="fmt" data-tema="historias">
+      <span class="num">01</span><span class="rec">Recomendado</span>
+      <div class="tel"><div class="pant"><span class="isla"></span><img src="docs/capturas/historias-1.jpg" alt="Historias: pantalla de inicio" class="on"><img src="docs/capturas/historias-2.jpg" alt="Historias: capítulo uno" loading="lazy"><img src="docs/capturas/historias-3.jpg" alt="Historias: frase entre capítulos" loading="lazy"><img src="docs/capturas/historias-final.jpg" alt="Historias: final" loading="lazy"><div class="puntos"></div></div></div>
+      <h2 class="serif">Historias</h2>
+      <p class="que">Como las historias de Instagram: pantalla completa, avanza sola al ritmo de la música. Tocás para pasar, mantenés para pausar.</p>
+      <div class="tags"><span class="tag">Automático</span><span class="tag">≈ 2 min</span><span class="tag">El más fácil de mirar</span></div>
+      <div class="acc"><a class="btn" href="index.html?tema=historias">Ver demo</a><a class="btn sec" href="#hacer">Usar</a></div>
+    </article>
+
+    <article class="fmt" data-tema="cine">
+      <span class="num">02</span>
+      <div class="tel"><div class="pant"><span class="isla"></span><img src="docs/capturas/cine-1.jpg" alt="Cine: pantalla de inicio" class="on"><img src="docs/capturas/cine-2.jpg" alt="Cine: título de capítulo" loading="lazy"><img src="docs/capturas/cine-3.jpg" alt="Cine: foto con subtítulo" loading="lazy"><div class="puntos"></div></div></div>
+      <h2 class="serif">Cine</h2>
+      <p class="que">Una película: cuenta regresiva, bandas negras y grano. Las fotos empiezan en sepia y se llenan de color. Termina con créditos.</p>
+      <div class="tags"><span class="tag">Automático</span><span class="tag">El que más emociona</span><span class="tag">Con buen volumen</span></div>
+      <div class="acc"><a class="btn" href="index.html?tema=cine">Ver demo</a><a class="btn sec" href="#hacer">Usar</a></div>
+    </article>
+
+    <article class="fmt" data-tema="carta">
+      <span class="num">03</span>
+      <div class="tel"><div class="pant"><span class="isla"></span><img src="docs/capturas/carta-1.jpg" alt="Carta: sobre cerrado" class="on"><img src="docs/capturas/carta-2.jpg" alt="Carta: portada con corazón" loading="lazy"><img src="docs/capturas/carta-3.jpg" alt="Carta: polaroids al bajar" loading="lazy"><div class="puntos"></div></div></div>
+      <h2 class="serif">Carta</h2>
+      <p class="que">Se abre un sobre y la historia se lee bajando con el dedo: polaroids que aparecen y frases grandes entre capítulos.</p>
+      <div class="tags"><span class="tag">A su ritmo</span><span class="tag">Sereno</span><span class="tag">Bueno para "en memoria"</span></div>
+      <div class="acc"><a class="btn" href="index.html?tema=carta">Ver demo</a><a class="btn sec" href="#hacer">Usar</a></div>
+    </article>
+
+    <article class="fmt" data-tema="album">
+      <span class="num">04</span>
+      <div class="tel"><div class="pant"><span class="isla"></span><img src="docs/capturas/album-1.jpg" alt="Álbum: tapa" class="on"><img src="docs/capturas/album-2.jpg" alt="Álbum: ficha de capítulo" loading="lazy"><img src="docs/capturas/album-3.jpg" alt="Álbum: polaroid" loading="lazy"><img src="docs/capturas/album-final.jpg" alt="Álbum: corazón de fotos" loading="lazy"><div class="puntos"></div></div></div>
+      <h2 class="serif">Álbum</h2>
+      <p class="que">Fotos sobre la mesa que se deslizan con el dedo. Al final, todas las fotos se juntan y forman un corazón.</p>
+      <div class="tags"><span class="tag">Interactivo</span><span class="tag">Con juego</span><span class="tag">Final sorpresa</span></div>
+      <div class="acc"><a class="btn" href="index.html?tema=album">Ver demo</a><a class="btn sec" href="#hacer">Usar</a></div>
+    </article>
+  </section>
+
+  <section class="seccion" aria-labelledby="t-arco">
+    <p class="eye">La historia</p>
+    <h2 class="t serif" id="t-arco">Cinco capítulos que van subiendo</h2>
+    <p class="l">Cada capítulo tiene un título, una frase, sus fotos y un "golpe": una frase corta que aparece sola en pantalla antes de pasar al siguiente.</p>
+    <div class="arco">
+      <div class="cap"><span class="n">Capítulo uno</span><h3>Donde empezó todo</h3><p>Bebés y las fotos más viejas. Ternura.</p><span class="barra" style="width:20%"></span></div>
+      <div class="cap"><span class="n">Capítulo dos</span><h3>Crecer con vos</h3><p>Primer día de clases, cumpleaños. Reconocimiento.</p><span class="barra" style="width:40%"></span></div>
+      <div class="cap"><span class="n">Capítulo tres</span><h3>Las aventuras</h3><p>Viajes y risas. Alegría, respira.</p><span class="barra" style="width:55%"></span></div>
+      <div class="cap"><span class="n">Capítulo cuatro</span><h3>Lo que no se ve</h3><p>Lo que hizo sin que nadie mirara. El golpe.</p><span class="barra" style="width:100%"></span></div>
+      <div class="cap"><span class="n">Capítulo cinco</span><h3>Hoy</h3><p>Todos juntos. Cierre cálido.</p><span class="barra" style="width:80%"></span></div>
+    </div>
+  </section>
+
+  <section class="seccion" aria-labelledby="t-compu">
+    <p class="eye">También en compu</p>
+    <h2 class="t serif" id="t-compu">Pensado primero para el celular, se adapta a cualquier pantalla</h2>
+    <div class="compus">
+      <figure class="pc"><div class="marco"><img src="docs/capturas/historias-compu.jpg" alt="Historias en compu" loading="lazy"></div><figcaption><b>Historias.</b> El teléfono queda al centro y la foto se difumina de fondo. Flechas del teclado para avanzar.</figcaption></figure>
+      <figure class="pc"><div class="marco"><img src="docs/capturas/cine-compu.jpg" alt="Cine en compu" loading="lazy"></div><figcaption><b>Cine.</b> En pantalla ancha se ve como una película de verdad.</figcaption></figure>
+      <figure class="pc"><div class="marco"><img src="docs/capturas/carta-compu.jpg" alt="Carta en compu" loading="lazy"></div><figcaption><b>Carta.</b> Las polaroids se acomodan en dos columnas.</figcaption></figure>
+      <figure class="pc"><div class="marco"><img src="docs/capturas/album-compu.jpg" alt="Álbum en compu" loading="lazy"></div><figcaption><b>Álbum.</b> Se arrastran las fotos con el mouse o se pasan con las flechas.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="seccion" id="hacer" aria-labelledby="t-hacer">
+    <p class="eye">Hacé la tuya</p>
+    <h2 class="t serif" id="t-hacer">Tres pasos, sin saber programar</h2>
+    <div class="pasos">
+      <div class="paso"><h3>Copiá el proyecto</h3><p>En GitHub, tocá <b>Fork</b>. O, si preferís Claude, descargá <code>index.html</code> y <code>historia.js</code> y seguí la guía <a href="PROMPT-CLAUDE.md">PROMPT-CLAUDE</a>.</p></div>
+      <div class="paso"><h3>Poné tu historia</h3><p>Subí las fotos a <code>fotos/</code>, la canción como <code>musica.mp3</code> y cambiá los textos en <code>historia.js</code>. Ahí también elegís el formato.</p></div>
+      <div class="paso"><h3>Publicala gratis</h3><p><b>Settings → Pages → main</b>. En un minuto tenés tu link para mandar por WhatsApp. También funciona como artifact de Claude.</p></div>
+    </div>
+  </section>
+</main>
+
+<footer class="w">
+  Hecho con amor en Argentina para el Día de la Madre. Código abierto bajo <a href="LICENSE">licencia MIT</a>: usalo, cambialo y regalalo.
+  <br><a href="https://github.com/francoboglione/diadelamadre">Ver en GitHub</a>
+</footer>
+
+<script>
+(function () {
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var tarjetas = document.querySelectorAll('.fmt');
+  // aparecen al entrar en pantalla
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.className += ' in'; io.unobserve(e.target); } }); }, { threshold: .15 });
+    for (var i = 0; i < tarjetas.length; i++) io.observe(tarjetas[i]);
+  } else for (var j = 0; j < tarjetas.length; j++) tarjetas[j].className += ' in';
+  // galería animada dentro de cada teléfono
+  for (var k = 0; k < tarjetas.length; k++) (function (t, k) {
+    var imgs = t.querySelectorAll('.pant img'), pts = t.querySelector('.puntos'), n = 0;
+    for (var a = 0; a < imgs.length; a++) pts.appendChild(document.createElement('i'));
+    var dots = pts.querySelectorAll('i');
+    function ver(x) { for (var b = 0; b < imgs.length; b++) { imgs[b].className = b === x ? 'on' : ''; dots[b].className = b === x ? 'on' : ''; } }
+    ver(0);
+    if (reduce) return;
+    setTimeout(function () { setInterval(function () { n = (n + 1) % imgs.length; ver(n); }, 2600); }, k * 650);
+  })(tarjetas[k], k);
+})();
+</script>
+</body>
+</html>
