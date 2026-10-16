@@ -56,6 +56,10 @@ svg.cz path{fill:currentColor}
 .sonido[aria-pressed="true"] .si{display:block}
 .sonido[aria-pressed="true"] .no{display:none}
 
+/* aviso flotante */
+.aviso{position:fixed;z-index:80;left:50%;bottom:28px;bottom:calc(env(safe-area-inset-bottom,0px) + 28px);max-width:88vw;padding:12px 18px;border-radius:999px;background:rgba(20,10,14,.88);color:#fff;font:600 14px/1.3 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;text-align:center;word-break:break-all;opacity:0;-webkit-transform:translate(-50%,10px);transform:translate(-50%,10px);transition:opacity .3s,-webkit-transform .3s;transition:opacity .3s,transform .3s;pointer-events:none}
+.aviso.ver{opacity:1;-webkit-transform:translate(-50%,0);transform:translate(-50%,0)}
+
 /* corazones */
 .chispa{position:absolute;left:0;top:0;pointer-events:none;will-change:transform,opacity}
 .chispa svg{width:100%;height:100%;display:block}
@@ -400,7 +404,8 @@ svg.cz path{fill:currentColor}
   var Q = {};
   location.search.replace(/[?&]([^=&]+)=?([^&]*)/g, function (m, k, v) { Q[decodeURIComponent(k)] = decodeURIComponent(v || '1'); });
   var TEMAS = ['historias', 'cine', 'carta', 'album'];
-  var tema = String(Q.tema || H.tema || 'historias').toLowerCase().replace('á', 'a');
+  var hashTema = (location.hash || '').replace('#', '').toLowerCase();
+  var tema = String(Q.tema || (/^(historias|cine|carta|album)$/.test(hashTema) ? hashTema : '') || H.tema || 'historias').toLowerCase().replace('á', 'a');
   if (TEMAS.indexOf(tema) < 0) tema = 'historias';
   var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   var conn = navigator.connection || {};
@@ -606,11 +611,34 @@ svg.cz path{fill:currentColor}
   function compartir() {
     var link = location.href.split('#')[0];
     var texto = (portada.titulo || 'Una historia para vos') + ' 💐';
-    var wa = function () { window.open('https://wa.me/?text=' + encodeURIComponent(texto + '\n' + link), '_blank'); };
+    var wa = function () {
+      var v = null;
+      try { v = window.open('https://wa.me/?text=' + encodeURIComponent(texto + '\n' + link), '_blank'); } catch (e) {}
+      if (!v) copiar(link);
+    };
     if (navigator.share) {
       try { navigator.share({ title: texto, text: texto, url: link }).then(function () {}, function (e) { if (!e || e.name !== 'AbortError') wa(); }); }
       catch (e) { wa(); }
     } else wa();
+  }
+
+  function aviso(txt) {
+    var t = el('div', 'aviso', esc(txt));
+    document.body.appendChild(t);
+    void t.offsetWidth; t.className += ' ver';
+    setTimeout(function () { t.className = 'aviso'; setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 400); }, 2600);
+  }
+  function copiar(link) {
+    var ok = function () { aviso('Link copiado. Pegalo en WhatsApp 💐'); };
+    var manual = function () {
+      var ta = el('textarea'); ta.value = link; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      var hecho = false; try { hecho = document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+      if (hecho) ok(); else aviso(link);
+    };
+    try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(link).then(ok, manual); return; } } catch (e) {}
+    manual();
   }
 
   /* ---------- la historia como secuencia de pasos ---------- */
