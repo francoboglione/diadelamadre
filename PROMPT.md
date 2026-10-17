@@ -6,21 +6,23 @@ Sin instalar nada y sin saber de computación. En 5 minutos tenés una carta ani
 
 ---
 
-## Qué necesitás
+## La forma más fácil: subí el proyecto entero
 
-1. **El archivo `carta.html`**
-   - En la compu: entrá a [carta.html](https://github.com/francoboglione/diadelamadre/blob/main/carta.html) y tocá el botón de descarga (⬇, *Download raw file*).
-   - En el celu: mantené apretado [este link](https://raw.githubusercontent.com/francoboglione/diadelamadre/main/carta.html) y elegí *Descargar vínculo*.
-2. **Entre 10 y 20 fotos.** Del celu o de Google Drive (con el clip 📎 de ChatGPT o Claude podés elegirlas directo desde Drive).
-3. **ChatGPT o Claude.** Sirve la versión gratis, pero tiene que poder **leer archivos y correr código**: así mete las fotos adentro de la carta. En Claude, si te dice que no puede ejecutar código, activá la creación de archivos en *Configuración*.
+1. **Descargá el proyecto:** tocá **[este link](https://github.com/francoboglione/diadelamadre/archive/refs/heads/main.zip)** (funciona igual en el celu y en la compu). Se baja un archivo `diadelamadre-main.zip`. No hace falta abrirlo.
+2. **Abrí un chat nuevo** en [chatgpt.com](https://chatgpt.com) o en [claude.ai](https://claude.ai).
+3. **Adjuntá** el zip y entre 10 y 20 fotos (del celu, o desde Google Drive con el clip 📎). Si querés, también una canción en mp3.
+4. **Escribí esto y mandalo:**
 
-## Paso a paso
+   ```text
+   Armame la carta para mi mamá con este proyecto. Seguí las instrucciones de INSTRUCCIONES-IA.md que está adentro del zip.
+   ```
 
-1. Abrí un chat nuevo en [chatgpt.com](https://chatgpt.com) o en [claude.ai](https://claude.ai).
-2. Adjuntá `carta.html` y tus fotos (y una canción en mp3, si querés).
-3. Copiá el prompt de abajo, pegalo y mandalo.
-4. Contestá las preguntas. Si no tenés ganas, escribí "dale con lo que quieras".
-5. Descargá `para-mama.html`, abrilo y tocá el sobre para probarla.
+5. **Contestá las preguntas** (cómo le dicen, quiénes firman, cómo es ella, algo para destacar, colores y canción). Si no tenés ganas, escribí "dale con lo que quieras".
+6. **Descargá `para-mama.html`**, abrilo y tocá el sobre.
+
+Para esto, ChatGPT o Claude tienen que poder **leer archivos y correr código**: así meten las fotos adentro de la carta. ChatGPT lo hace solo. En Claude, si te dice que no puede ejecutar código, activá la creación de archivos en *Configuración*.
+
+¿No podés subir el zip? Bajá solo [`carta.html`](https://raw.githubusercontent.com/francoboglione/diadelamadre/main/carta.html) (en el celu: mantené apretado el link → *Descargar vínculo*), adjuntalo con tus fotos y usá [el prompt largo](#el-prompt-largo) de más abajo.
 
 ## Cómo mandarla
 
@@ -31,9 +33,9 @@ Sin instalar nada y sin saber de computación. En 5 minutos tenés una carta ani
 
 ---
 
-## El prompt
+## El prompt largo
 
-Copiá todo lo que está en el recuadro:
+Solo si adjuntaste `carta.html` suelto (sin el zip). Copiá todo lo que está en el recuadro:
 
 ````text
 Quiero regalarle a mi mamá una carta animada por el Día de la Madre. Te adjunto carta.html (plantilla de código abierto del proyecto github.com/francoboglione/diadelamadre, licencia MIT) y mis fotos.
@@ -112,7 +114,7 @@ Decime en 3 líneas cómo probarla (abrir el archivo y tocar el sobre) y cómo m
 
 ## Así se ve la charla
 
-> **Vos:** *(adjuntás carta.html y 14 fotos, pegás el prompt)*
+> **Vos:** *(adjuntás el zip y 14 fotos)* Armame la carta para mi mamá con este proyecto. Seguí las instrucciones de INSTRUCCIONES-IA.md que está adentro del zip.
 >
 > **IA:** ¡Qué lindo regalo! Te hago 6 preguntas rápidas; lo que no contestes lo completo yo: 1) ¿Cómo le dicen? 2) ¿Quiénes firman? 3) ¿Qué dice siempre, qué cocina, qué costumbre tiene? 4) ¿Algo para destacar? 5) ¿Colores: rosa, lavanda, durazno, salvia, cielo o noche? 6) ¿Canción propia?
 >

@@ -13,11 +13,17 @@ Una carta animada para el Día de la Madre que **armás desde ChatGPT o Claude, 
 
 ## Hacela en 5 minutos
 
-1. **Descargá [`carta.html`](https://github.com/francoboglione/diadelamadre/blob/main/carta.html)** (botón ⬇ *Download raw file*).
-2. **Abrí un chat en [ChatGPT](https://chatgpt.com) o [Claude](https://claude.ai)** y adjuntá `carta.html` y entre 10 y 20 fotos (del celu o desde Google Drive).
-3. **Pegá el prompt de [`PROMPT.md`](PROMPT.md).** La IA te hace 6 preguntas (cómo le dicen, quiénes firman, cómo es ella, algo para destacar, colores y canción), escribe los textos y te devuelve **`para-mama.html`** listo.
+1. **Descargá el proyecto:** [diadelamadre-main.zip](https://github.com/francoboglione/diadelamadre/archive/refs/heads/main.zip) (anda en el celu y en la compu; no hace falta abrirlo).
+2. **Abrí un chat en [ChatGPT](https://chatgpt.com) o [Claude](https://claude.ai)** y adjuntá el zip y entre 10 y 20 fotos (del celu o desde Google Drive).
+3. **Mandá esta frase:**
 
-Si no contestás alguna pregunta, usa lo de por defecto: la carta siempre sale completa.
+   ```text
+   Armame la carta para mi mamá con este proyecto. Seguí las instrucciones de INSTRUCCIONES-IA.md que está adentro del zip.
+   ```
+
+La IA te hace 6 preguntas (cómo le dicen, quiénes firman, cómo es ella, algo para destacar, colores y canción), escribe los textos, ordena las fotos por fecha y te devuelve **`para-mama.html`** con todo adentro. Si no contestás alguna pregunta, usa lo de por defecto: la carta siempre sale completa.
+
+Paso a paso con un ejemplo de la charla, cómo mandarla y la alternativa sin zip: [`PROMPT.md`](PROMPT.md).
 
 ## Qué le podés pedir
 
@@ -83,9 +89,11 @@ Sin dependencias, JavaScript ES5 para celulares viejos, y respeta "Reducir movim
 ## Estructura
 
 ```
-carta.html     la plantilla: motor + bloque de datos (es lo que se adjunta en el chat)
-PROMPT.md      el prompt para ChatGPT o Claude, con instrucciones paso a paso
-armar.py       arma la carta con Python (fotos adentro del archivo)
+carta.html            la plantilla: motor + bloque de datos
+INSTRUCCIONES-IA.md   lo que lee ChatGPT o Claude para armar la carta (preguntas, textos, armado)
+PROMPT.md             paso a paso para la persona, y un prompt largo si solo sube carta.html
+armar.py              arma la carta con Python: fotos (carpeta o zip) ordenadas por fecha y adentro del archivo
+AGENTS.md, CLAUDE.md  apuntan a INSTRUCCIONES-IA.md para que cualquier IA lo encuentre
 index.html     la carta de ejemplo (generada desde ejemplo.json)
 ejemplo.json   los datos del ejemplo
 fotos/         fotos de ejemplo (ilustraciones generadas)
