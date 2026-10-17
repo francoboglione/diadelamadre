@@ -1,131 +1,104 @@
-# Día de la Madre · una historia para mamá
+# Carta para mamá 💌
 
-Una página animada que cuenta la historia de tu vieja **en cinco capítulos**, con sus fotos y **la canción que vos elijas** de fondo. Arranca tranquila, va subiendo y termina con un "Feliz día, ma" que pega.
+Una carta animada para el Día de la Madre que **armás desde ChatGPT o Claude, sin saber de computación**. Se abre un sobre, la carta se escribe sola mientras la página baja, tus fotos caen como lluvia y pasan en carrusel, una frase se resalta como con marcador y al final todas las fotos forman un corazón. Con música.
 
-- **100 % estática:** sin servidor, sin base de datos, sin registro. Es una carpeta con un `index.html`.
-- **Gratis para siempre:** se publica en GitHub Pages o como artifact de Claude.
-- **Pensada primero para el celular:** iPhone (Safari) y Android (Chrome), incluidos teléfonos viejos. También se ve bien en compu.
-- **Cuatro formatos para elegir**, con un solo archivo de texto para editar: `historia.js`.
-- **Licencia MIT:** hacé un fork, cambiala, regalala.
+👉 **Ejemplo:** [francoboglione.github.io/diadelamadre](https://francoboglione.github.io/diadelamadre/) (la carta de "Marta", con fotos de ejemplo)
 
-👉 **Demo y comparación de formatos:** `formatos.html` (ver más abajo cómo verla publicada).
-
----
-
-## Los 4 formatos
-
-| | Formato | Cómo se vive | Ideal para |
-|---|---|---|---|
-| <img src="docs/capturas/historias-2.jpg" width="150"> | **Historias** `historias` | Pantalla completa como las historias de Instagram. Avanza sola al ritmo de la música; tocás para pasar y mantenés apretado para pausar. | Mamás que usan Instagram o WhatsApp. El más fácil de mirar. |
-| <img src="docs/capturas/cine-2.jpg" width="150"> | **Cine** `cine` | Una película: cuenta regresiva, bandas negras, grano de cine y fotos en sepia que se llenan de color capítulo a capítulo. Termina con créditos. | El que más emociona. Mejor con buen volumen. |
-| <img src="docs/capturas/carta-2.jpg" width="150"> | **Carta** `carta` | Se abre un sobre y la historia se lee bajando con el dedo, con polaroids que aparecen y frases grandes entre capítulos. | Mamás que prefieren ir a su ritmo. |
-| <img src="docs/capturas/album-3.jpg" width="150"> | **Álbum** `album` | Un álbum sobre la mesa: deslizás cada foto con el dedo. Al final, todas las fotos forman un corazón. | Interactivo y con mucho juego. |
-
-Podés probar cualquiera sin tocar nada: agregá `?tema=cine` (o `historias`, `carta`, `album`) al final del link.
+- **Gratis y de código abierto** (licencia MIT).
+- **Un solo archivo**, con las fotos adentro: se manda por WhatsApp o se sube a un link.
+- **Pensada para el celular** (iPhone y Android, también teléfonos viejos). En compu se ve como una hoja sobre el escritorio.
+- **Seis paletas de colores** y textos que se adaptan si firma uno o varios hijos.
 
 ---
 
-## Cómo hacer la tuya
+## Hacela en 5 minutos
 
-### Opción A · GitHub Pages (10 minutos, gratis)
+1. **Descargá [`carta.html`](https://github.com/francoboglione/diadelamadre/blob/main/carta.html)** (botón ⬇ *Download raw file*).
+2. **Abrí un chat en [ChatGPT](https://chatgpt.com) o [Claude](https://claude.ai)** y adjuntá `carta.html` y entre 10 y 20 fotos (del celu o desde Google Drive).
+3. **Pegá el prompt de [`PROMPT.md`](PROMPT.md).** La IA te hace 6 preguntas (cómo le dicen, quiénes firman, cómo es ella, algo para destacar, colores y canción), escribe los textos y te devuelve **`para-mama.html`** listo.
 
-1. **Hacé un fork** de este repositorio (botón *Fork* arriba a la derecha).
-2. **Subí tus fotos** a la carpeta `fotos/` (*Add file → Upload files*). Podés pisar las de ejemplo con los mismos nombres (`01.jpg`, `02.jpg`…) o usar los nombres que quieras.
-3. **Editá `historia.js`** (tocá el lápiz ✏️): nombres, títulos de capítulos, frases y qué foto va en cada uno. En el campo `tema` elegís el formato.
-4. **Subí la música** (opcional): un archivo `musica.mp3` al lado de `index.html`.
-5. **Publicá:** *Settings → Pages → Build and deployment → Deploy from a branch → `main` / `(root)` → Save*.
-6. Al minuto vas a tener tu link: `https://TU-USUARIO.github.io/diadelamadre/`. Mandalo por WhatsApp.
+Si no contestás alguna pregunta, usa lo de por defecto: la carta siempre sale completa.
 
-> Si tu repositorio es privado, GitHub Pages pide plan pago. Dejalo público: igual nadie lo encuentra si no tiene el link (la página tiene `noindex`).
+## Qué le podés pedir
 
-### Opción B · Desde Claude, sin GitHub
+| | Opciones |
+|---|---|
+| **Cómo le dicen** | mamá, ma, mami, su nombre |
+| **Quiénes firman** | uno o varios: los textos pasan solos a singular o plural |
+| **Colores** | `rosa` · `lavanda` · `durazno` · `salvia` · `cielo` · `noche` |
+| **Algo para destacar** | aparece resaltado con marcador en el medio de la carta |
+| **Música** | tu mp3 (y desde qué segundo) o una cajita de música incluida, sin derechos |
+| **Fotos** | subidas al chat (quedan adentro del archivo) o links públicos de Google Drive |
 
-Descargá `index.html` y `historia.js`, abrí un chat en [claude.ai](https://claude.ai), adjuntá esos dos archivos, tus fotos y la canción, y pegá el prompt de [`PROMPT-CLAUDE.md`](PROMPT-CLAUDE.md). Claude te arma la historia y la publica como artifact. Después tocás **Compartir** y te queda un link público.
+Después podés pedir cambios en el mismo chat: "cambiá la P. D.", "pasala a durazno", "sacá la foto 3".
 
-### Opción C · Netlify o Vercel
+## Cómo mandarla
 
-Arrastrá la carpeta completa a [app.netlify.com/drop](https://app.netlify.com/drop) (con una cuenta gratis) o importá tu fork en Vercel. No hace falta configurar nada: no hay paso de compilación.
+- **WhatsApp:** mandá `para-mama.html` como archivo. En Android se abre directo; en iPhone conviene un link.
+- **Link gratis:** renombrala `index.html`, ponela sola en una carpeta y arrastrá la carpeta a [app.netlify.com/drop](https://app.netlify.com/drop).
+- **Artifact de Claude o Canvas de ChatGPT:** botón Compartir.
+- **Truco:** agregá `#Nombre` al final del link y la carta dice "Querida Nombre".
 
 ---
 
-## Cómo contar una buena historia
+## Para los que se animan a un poco más
 
-La estructura que viene de ejemplo funciona porque **va de menor a mayor**:
+Todo lo que se personaliza está en un solo bloque al principio de `carta.html`, entre `/*CARTA:INICIO*/` y `/*CARTA:FIN*/`:
 
-| # | Capítulo | Qué fotos van | Para qué sirve |
-|---|---|---|---|
-| 1 | **Donde empezó todo** | Bebés, embarazo, las fotos más viejas | Ternura. Engancha. |
-| 2 | **Crecer con vos** | Primer día de clases, cumpleaños, actos | Reconocimiento. |
-| 3 | **Las aventuras** | Viajes, vacaciones, fotos riéndose | Alegría. Respira. |
-| 4 | **Lo que no se ve** | Fotos de ella sola, cansada, cocinando, trabajando | **El golpe.** Lo que hizo sin que nadie mirara. |
-| 5 | **Hoy** | Fotos recientes, todos juntos | Cierre cálido. |
-
-Algunos consejos:
-
-- **3 o 4 fotos por capítulo.** Con 15 o 20 fotos, la historia dura lo mismo que una canción (2 a 3 minutos).
-- **El "golpe" es una sola frase**, corta, que se lea en voz alta. Es lo que aparece entre capítulo y capítulo y lo que hace llorar.
-- **Pies de foto** solo en algunas. Que no sea un documento.
-- Si ella ya no está, cambiá los textos a modo "en memoria": funciona igual de bien y sin confeti (el formato **Carta** es el más sereno).
-
-## La canción
-
-- Nombrala `musica.mp3` (o cambiá el nombre en `historia.js`).
-- **`desde`:** el segundo en que arranca. Ponela unos segundos antes del estribillo y la emoción llega justo con el capítulo 4.
-- **Que pese menos de 6 MB.** Un mp3 de 128 kbps de 3 minutos pesa unos 3 MB.
-- **Derechos de autor:** si tu repositorio es público, la canción también queda pública. Para no tener problemas, usá música libre: [Pixabay Music](https://pixabay.com/music/), la Biblioteca de audio de YouTube o [Free Music Archive](https://freemusicarchive.org/). Si querés *esa* canción, publicalo como artifact de Claude (opción B) o en un repo privado con Netlify.
-- La música nunca arranca sola: los celulares la bloquean. Por eso todas las versiones empiezan con un "tocá para abrir".
-
-## Las fotos
-
-- **JPG de 1600 px como máximo del lado más largo y menos de 400 KB.** Si son más grandes, pasalas por [squoosh.app](https://squoosh.app) (funciona en el navegador, no sube nada).
-- Las fotos de iPhone (HEIC): exportalas como JPG o sacales captura.
-- Funcionan verticales, horizontales y cuadradas. En Historias y Cine se recortan para llenar la pantalla: centrá lo importante.
-- **Videos cortos:** `{ src: "videos/a.mp4", poster: "videos/a.jpg" }`. Suenan muteados para no tapar la canción.
-
-## Que el link se vea lindo en WhatsApp
-
-WhatsApp no ejecuta JavaScript, así que la vista previa se edita a mano en el `<head>` de `index.html`:
-
-```html
-<meta property="og:title" content="Para vos, ma 💐">
-<meta property="og:image" content="https://TU-USUARIO.github.io/diadelamadre/fotos/portada.jpg">
+```js
+window.CARTA = {
+  "para": "mamá",
+  "de": "Lucía, Tomi y Juli",
+  "hijos": 3,
+  "fecha": "Domingo 18 de octubre",
+  "paleta": "rosa",
+  "textos": { "destacado": "Cuando volviste a estudiar a los 45…" },
+  "fotos": [{ "src": "fotos/01.jpg", "texto": "La costa, 1998" }],
+  "musica": { "archivo": "", "generada": true }
+};
 ```
 
-`fotos/portada.jpg` tiene que ser una imagen de 1200×630 de menos de 300 KB, con la **URL completa**. WhatsApp guarda la vista previa unos días: si la cambiás, probá con `…/diadelamadre/?v=2`.
+Los textos que no pongas (`saludo`, `intro`, `recuerdos`, `antesDestacado`, `destacado`, `gracias`, `final`, `cierre`, `sub`, `firma`, `pd`) se completan solos. También acepta `"velocidad": 1.5` para que se escriba más rápido, y una paleta propia con colores (`{"fondo": "#…", "papel": "#…", "acento": "#…"}`).
 
-## Compatibilidad
+**Con Python**, `armar.py` hace lo mismo que la IA: achica las fotos y las mete adentro.
 
-| Dónde | Funciona | Notas |
-|---|---|---|
-| iPhone, Safari iOS 15+ | ✅ | Música con fundido de entrada y salida |
-| iPhone viejo, iOS 12 a 14 | ✅ | Sin fundido de volumen (Safari no lo permite), el resto igual |
-| Android, Chrome (incluido Android 7 a 9) | ✅ | Probado en 360 px de ancho |
-| Samsung Internet | ✅ | |
-| Compu: Chrome, Safari, Firefox, Edge | ✅ | Flechas del teclado y barra espaciadora |
-| Celulares con poca memoria | ✅ | Detecta el modo ahorro y apaga efectos pesados |
-| "Reducir movimiento" activado | ✅ | Se respeta: todo aparece sin animaciones |
+```bash
+pip install pillow
+python3 armar.py mis-datos.json --fotos carpeta-de-fotos/ -o para-mama.html
+```
 
-Parámetros útiles en el link:
+El ejemplo de este repo se genera con `python3 armar.py ejemplo.json --sin-embeber -o index.html`.
 
-- `?tema=cine` cambia el formato.
-- `?lite=1` fuerza el modo liviano.
-- `?sinmusica=1` la abre sin canción.
+**Con GitHub Pages:** hacé un fork, cambiá el bloque de `carta.html`, subí tus fotos a `fotos/` y activá *Settings → Pages → main / root*.
+
+## Cómo funciona
+
+1. Un sobre con lacre de corazón y "Para mamá" escrito a mano. Al tocarlo arranca la música, se abre la solapa y sale la carta.
+2. La carta ocupa la pantalla y se escribe letra por letra. La página baja sola siguiendo lo que se escribe; abajo hay **Pausar**, **Ver todo** y **Sonido**.
+3. En el medio, la **lluvia de fotos**, el **carrusel**, la frase **resaltada**, la lista de **gracias** y el **corazón de fotos**.
+4. Cierra con "Feliz día, mamá", la firma y la P. D.
+
+Sin dependencias, JavaScript ES5 para celulares viejos, y respeta "Reducir movimiento" (muestra la carta completa, sin animaciones).
 
 ## Estructura
 
 ```
-index.html         el motor: los 4 formatos, sin dependencias (no hace falta tocarlo)
-historia.js        TU historia: textos, fotos, canción y formato
-fotos/             tus fotos (las que vienen son de ejemplo)
-musica.mp3         tu canción (no viene incluida)
-formatos.html      vitrina para comparar los 4 formatos
-PROMPT-CLAUDE.md   prompt para armarla desde Claude
-docs/capturas/     imágenes de este README
+carta.html     la plantilla: motor + bloque de datos (es lo que se adjunta en el chat)
+PROMPT.md      el prompt para ChatGPT o Claude, con instrucciones paso a paso
+armar.py       arma la carta con Python (fotos adentro del archivo)
+index.html     la carta de ejemplo (generada desde ejemplo.json)
+ejemplo.json   los datos del ejemplo
+fotos/         fotos de ejemplo (ilustraciones generadas)
+clasico/       la versión anterior: historia en 5 capítulos con 4 formatos
 ```
+
+## Versión clásica
+
+La versión anterior (historias tipo Instagram, cine, carta con scroll y álbum de polaroids) sigue en [`clasico/`](clasico/), con su propio `historia.js` y la guía [`clasico/PROMPT-CLAUDE.md`](clasico/PROMPT-CLAUDE.md).
 
 ## Privacidad
 
-La página no se indexa en buscadores, pero **cualquiera que tenga el link la puede ver**. Usá fotos que la familia esté de acuerdo en compartir, y si aparecen otras personas, preguntales.
+La página no se indexa en buscadores, pero **cualquiera que tenga el link la puede ver**. Usá fotos que la familia esté de acuerdo en compartir.
 
 ## Licencia
 
