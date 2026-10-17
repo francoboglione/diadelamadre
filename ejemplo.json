@@ -1,0 +1,45 @@
+{
+  "para": "mamá",
+  "de": "Lucía, Tomi y Juli",
+  "hijos": 3,
+  "fecha": "Domingo 18 de octubre",
+  "paleta": "rosa",
+  "textos": {
+    "saludo": "Querida {para}:",
+    "intro": "Hoy es tu día y los tres nos pusimos de acuerdo (milagro) para escribirte esta carta. Viene con fotos, porque hay cosas que se explican mejor así.",
+    "recuerdos": "Mirando estas fotos nos acordamos de todo: las vacaciones en la costa con el auto cargado hasta el techo, los cumpleaños con torta casera y tus audios de cuatro minutos que siempre terminan con «bueno, nada, eso».",
+    "antesDestacado": "Hay algo que queremos que sepas:",
+    "destacado": "Cuando volviste a estudiar a los 45 y te recibiste con nosotros aplaudiendo en primera fila, entendimos de dónde sacamos las ganas.",
+    "gracias": [
+      "Por las milanesas de los domingos y el «¿comiste?» de todos los días.",
+      "Por bancarte nuestras mudanzas, nuestros novios y nuestras crisis.",
+      "Por enseñarnos que se puede empezar de nuevo a cualquier edad.",
+      "Por estar. Siempre."
+    ],
+    "final": "Todo lo que somos tiene algo tuyo. Gracias por ser nuestra casa, aunque ya no vivamos en ella.",
+    "cierre": "Feliz día, {para}",
+    "sub": "A la mejor mamá del mundo.",
+    "firma": "Con amor,",
+    "pd": "P. D.: Este domingo el asado lo hace Tomi. Rezá por nosotros."
+  },
+  "fotos": [
+    { "src": "fotos/01.jpg", "texto": "Donde empezó todo" },
+    { "src": "fotos/02.jpg", "texto": "La costa, 1998" },
+    { "src": "fotos/03.jpg", "texto": "" },
+    { "src": "fotos/04.jpg", "texto": "Primer día de clases" },
+    { "src": "fotos/05.jpg", "texto": "" },
+    { "src": "fotos/06.jpg", "texto": "Cumple de Juli" },
+    { "src": "fotos/07.jpg", "texto": "" },
+    { "src": "fotos/08.jpg", "texto": "Ese viaje" },
+    { "src": "fotos/09.jpg", "texto": "" },
+    { "src": "fotos/10.jpg", "texto": "" },
+    { "src": "fotos/11.jpg", "texto": "" },
+    { "src": "fotos/12.jpg", "texto": "" },
+    { "src": "fotos/13.jpg", "texto": "" },
+    { "src": "fotos/14.jpg", "texto": "La recibida" },
+    { "src": "fotos/15.jpg", "texto": "" },
+    { "src": "fotos/16.jpg", "texto": "Los cinco" }
+  ],
+  "musica": { "archivo": "", "generada": true },
+  "mostrarComoHacerla": true
+}

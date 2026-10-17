@@ -1,0 +1,784 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Tenés una carta 💌</title>
+<meta name="description" content="Una carta animada para el Día de la Madre: se abre el sobre, se escribe sola y caen las fotos.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#3a1f2b">
+<meta property="og:title" content="Tenés una carta 💌">
+<meta property="og:description" content="Abrila con el volumen alto.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Kalam:wght@400;700&family=Figtree:wght@400;600&display=swap">
+<style>
+/* Carta para mamá · un sobre que se abre, una carta que se escribe sola y fotos que caen. Licencia MIT. */
+:root{
+  --fondo:#3a1f2b; --fondo2:#5a2b3c; --papel:#fff8f2; --papel2:#f6ece2; --tinta:#3b2330; --suave:#7a5b68;
+  --acento:#c9506e; --acento2:#f0b3a6; --marcador:rgba(242,160,184,.55); --lacre:#b2334f; --sobre:#f3d3cf;
+  --linea:rgba(59,35,48,.11); --margen:rgba(201,80,110,.35);
+  --display:"Gloock",Georgia,"Times New Roman",serif;
+  --mano:"Kalam","Bradley Hand","Segoe Print","Comic Sans MS",cursive;
+  --ui:"Figtree",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --lh:34px; --izq:58px;
+  --gl:max(16px, env(safe-area-inset-left, 0px)); --gr:max(16px, env(safe-area-inset-right, 0px));
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0}
+html{background:var(--fondo);-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{background:var(--fondo);color:var(--tinta);font-family:var(--ui);-webkit-font-smoothing:antialiased;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+img{display:block;max-width:100%}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--acento2);outline-offset:3px}
+[hidden]{display:none!important}
+.fondo{position:fixed;inset:0;z-index:0;background:radial-gradient(120% 80% at 50% 0%,var(--fondo2),var(--fondo) 70%)}
+#petalos{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:8}
+
+/* ── el sobre ── */
+.escena{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;text-align:center;
+  padding:calc(24px + env(safe-area-inset-top, 0px)) var(--gr) calc(24px + env(safe-area-inset-bottom, 0px)) var(--gl);transition:opacity .5s ease}
+.escena .ojo{margin:0;font-size:12px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:var(--acento2)}
+.sobre{position:relative;width:min(86vw,420px);perspective:1200px;animation:llega 1.1s cubic-bezier(.2,.8,.2,1) both}
+.sobre::before{content:"";display:block;padding-top:70%}
+@keyframes llega{from{transform:translateY(40px) rotate(-4deg);opacity:0}to{transform:none;opacity:1}}
+.sobre-atras{position:absolute;inset:0;border-radius:6px;background:var(--sobre);filter:brightness(.9);box-shadow:0 30px 60px -24px rgba(0,0,0,.65)}
+.papelito{position:absolute;left:7%;right:7%;top:8%;height:84%;z-index:1;border-radius:3px;background-color:var(--papel);
+  background-image:repeating-linear-gradient(180deg,transparent 0,transparent 13px,var(--linea) 13px,var(--linea) 14px);background-position:0 20px;
+  box-shadow:0 1px 3px rgba(0,0,0,.15);transition:transform .9s cubic-bezier(.3,.7,.2,1)}
+.bolsillo{position:absolute;inset:0;z-index:2;border-radius:6px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:6%;
+  background:linear-gradient(165deg,rgba(255,255,255,.28),transparent 45%),var(--sobre);
+  -webkit-clip-path:polygon(0 0,50% 50%,100% 0,100% 100%,0 100%);clip-path:polygon(0 0,50% 50%,100% 0,100% 100%,0 100%)}
+.para-sobre{font-family:var(--mano);font-weight:700;font-size:clamp(22px,6.4vw,34px);line-height:1.1;color:var(--tinta)}
+.de-sobre{margin-top:4px;font-family:var(--mano);font-size:clamp(14px,3.9vw,18px);color:var(--suave)}
+.solapa{position:absolute;left:0;right:0;top:0;height:52%;z-index:3;transform-origin:50% 0;filter:drop-shadow(0 3px 3px rgba(0,0,0,.18));
+  transition:transform .8s cubic-bezier(.4,.1,.2,1),z-index 0s .36s}
+.solapa i{position:absolute;inset:0;border-radius:6px 6px 0 0;background:linear-gradient(180deg,var(--sobre),var(--sobre));filter:brightness(.96);
+  -webkit-clip-path:polygon(0 0,100% 0,50% 100%);clip-path:polygon(0 0,100% 0,50% 100%)}
+.lacre{position:absolute;left:50%;top:52%;z-index:4;width:52px;height:52px;margin:-26px 0 0 -26px;border:0;border-radius:50%;cursor:pointer;display:grid;place-items:center;
+  background:radial-gradient(circle at 34% 30%,rgba(255,255,255,.38),transparent 46%),var(--lacre);
+  box-shadow:0 5px 12px rgba(0,0,0,.35),inset 0 -3px 7px rgba(0,0,0,.28),0 0 0 5px rgba(0,0,0,.06);transition:transform .35s ease,opacity .35s ease}
+.lacre svg{width:22px;height:22px;fill:rgba(255,255,255,.88)}
+.lacre:hover{transform:scale(1.06)}
+.abierto .lacre{transform:scale(1.5);opacity:0;pointer-events:none}
+.abierto .solapa{transform:rotateX(180deg);z-index:0}
+.sale .papelito{transform:translateY(-64%)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:0;border-radius:999px;padding:15px 28px;font-size:17px;font-weight:600;cursor:pointer;
+  background:var(--papel);color:var(--tinta);box-shadow:0 14px 30px -14px rgba(0,0,0,.6);transition:transform .2s ease}
+.btn:hover{transform:translateY(-1px)}
+.btn svg{width:18px;height:18px;fill:currentColor}
+.nota{margin:-12px 0 0;font-size:13px;color:rgba(255,255,255,.72)}
+.probar{border:1px dashed rgba(255,255,255,.45);background:none;color:rgba(255,255,255,.85);border-radius:999px;padding:10px 18px;font-size:14px;cursor:pointer}
+.escena.fuera{opacity:0;pointer-events:none}
+.cortina{position:fixed;z-index:6;background:var(--papel);border-radius:3px;transition:all .75s cubic-bezier(.6,0,.2,1)}
+
+/* ── la carta ── */
+.carta{position:relative;z-index:1;max-width:720px;margin:0 auto;min-height:100vh;overflow-x:hidden;overflow-x:clip;
+  background-color:var(--papel);
+  background-image:linear-gradient(90deg,transparent calc(var(--izq) - 16px),var(--margen) calc(var(--izq) - 16px),var(--margen) calc(var(--izq) - 15px),transparent calc(var(--izq) - 15px)),
+    repeating-linear-gradient(180deg,transparent 0,transparent calc(var(--lh) - 1px),var(--linea) calc(var(--lh) - 1px),var(--linea) var(--lh));
+  background-position:0 0,0 -7px;
+  padding:calc(var(--lh) * 2 + env(safe-area-inset-top, 0px)) var(--gr) calc(var(--lh) * 4 + env(safe-area-inset-bottom, 0px)) var(--izq);
+  box-shadow:0 0 90px rgba(0,0,0,.35);font-family:var(--mano);font-size:20px;line-height:var(--lh);color:var(--tinta)}
+.carta p{margin:0 0 var(--lh)}
+.fecha{text-align:right;color:var(--suave)}
+.saludo{font-weight:700;font-size:23px}
+.c{opacity:0}
+.c.t{opacity:1;transition:opacity .18s ease}
+.pluma{display:inline-block;width:2px;height:1.05em;margin-left:1px;vertical-align:-.16em;background:var(--acento);animation:titila 1s steps(2) infinite}
+@keyframes titila{50%{opacity:0}}
+.palabra{white-space:nowrap}
+.marca{background-image:linear-gradient(var(--marcador),var(--marcador));background-repeat:no-repeat;background-size:0% 60%;background-position:0 80%;
+  -webkit-box-decoration-break:clone;box-decoration-break:clone;transition:background-size 1.3s ease;padding:0 .08em}
+.marca.on{background-size:100% 60%}
+.lista{list-style:none;margin:0 0 var(--lh);padding:0}
+.lista li{position:relative;padding-left:1.25em}
+.lista li::before{content:"♥";position:absolute;left:0;color:var(--acento);opacity:0;transition:opacity .4s}
+.lista li.on::before{opacity:1}
+.firma{text-align:right;font-weight:700}
+.firma > span{display:block}
+.pd{color:var(--suave);font-size:18px}
+
+/* bloques que cortan la escritura: alto en múltiplos del renglón */
+.bloque{position:relative;margin:0 0 var(--lh) calc(16px - var(--izq))}
+.grande{text-align:center;font-family:var(--display);font-weight:400;color:var(--acento);font-size:clamp(46px,12.5vw,88px);line-height:1;letter-spacing:-.01em;
+  display:flex;flex-direction:column;justify-content:center;opacity:0;transform:scale(.92);transition:opacity 1.2s ease,transform 1.4s cubic-bezier(.2,.7,.2,1)}
+.grande.on{opacity:1;transform:none}
+.grande small{display:block;margin-top:.25em;font-family:var(--mano);font-size:.36em;color:var(--suave);letter-spacing:0}
+
+/* polaroid con cinta */
+.pol{--alto:0;position:absolute;left:50%;top:50%;width:var(--w);margin:0;visibility:hidden;
+  background:linear-gradient(160deg,#fffdf9,#f3ece2);padding:calc(var(--w) * .055) calc(var(--w) * .055) 0;border-radius:2px;
+  box-shadow:0 calc(6px + var(--alto) * 40px) calc(14px + var(--alto) * 36px) -10px rgba(0,0,0,.5),0 1px 3px rgba(0,0,0,.22)}
+.pol::before{content:"";position:absolute;z-index:2;left:50%;top:calc(var(--w) * -.05);width:calc(var(--w) * .36);height:calc(var(--w) * .11);
+  transform:translateX(-50%) rotate(-3deg);background:var(--acento2);opacity:.75;box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.pol:nth-child(even)::before{transform:translateX(-44%) rotate(4deg);background:#fff3d6}
+.pol .foto{position:relative;padding-top:118%;overflow:hidden;background:var(--papel2)}
+.pol .foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pol figcaption{font-family:var(--mano);color:#3b2a30;font-size:calc(var(--w) * .085);line-height:1.1;min-height:calc(var(--w) * .2);display:flex;align-items:center;justify-content:center;text-align:center;padding:4px 6px}
+.pol.rota{display:none}
+.pol.vuela{visibility:visible;transition:transform .78s cubic-bezier(.22,.85,.3,1.14),box-shadow .78s ease}
+.pol.ya{visibility:visible}
+.corazon .pol{padding:calc(var(--w) * .07) calc(var(--w) * .07) calc(var(--w) * .2)}
+.corazon .pol .foto{padding-top:100%}
+.corazon .pol::before{display:none}
+
+/* carrusel */
+.carrusel{margin-left:calc(-1 * var(--izq));margin-right:calc(-1 * var(--gr));overflow:hidden;padding:18px 0 10px}
+.fila{opacity:0;transform:translateX(26%);transition:opacity 1s ease,transform 1.3s cubic-bezier(.2,.7,.2,1)}
+.fila.rev{transform:translateX(-26%)}
+.fila.on{opacity:1;transform:none}
+.fila + .fila{margin-top:16px}
+.tira{display:flex;gap:16px;width:max-content;padding:0 8px;animation:desliza var(--dur,40s) linear infinite}
+.fila.rev .tira{animation-direction:reverse}
+.tira .pol{position:relative;left:auto;top:auto;flex:0 0 auto;visibility:visible;transform:rotate(var(--r))}
+.tira .pol .foto{padding-top:100%}
+@keyframes desliza{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+.flor-sep{display:flex;justify-content:center;align-items:center;opacity:.85}
+.flor-sep svg{width:120px;height:68px}
+
+.fin{text-align:center;font-family:var(--ui);font-size:16px;line-height:1.5}
+.fin .btn{background:var(--acento);color:#fff}
+.hacer{margin:calc(var(--lh) * 2) 0 0;text-align:left;font-family:var(--ui);font-size:15px;line-height:1.55;color:var(--suave);background:var(--papel2);border-radius:14px;padding:18px 18px 16px}
+.hacer b{color:var(--tinta)}
+.hacer a{color:var(--acento)}
+
+/* controles */
+.controles{position:fixed;z-index:9;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom, 0px));display:flex;gap:6px;padding:6px;border-radius:999px;
+  background:rgba(20,14,18,.72);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 10px 30px -10px rgba(0,0,0,.5)}
+.controles button{display:inline-flex;align-items:center;gap:7px;border:0;border-radius:999px;padding:10px 14px;background:none;color:#fff;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap}
+.controles button:hover{background:rgba(255,255,255,.12)}
+.controles svg{width:15px;height:15px;fill:currentColor}
+
+@media (max-width:420px){
+  :root{--lh:31px;--izq:46px}
+  .carta{font-size:18.5px}
+  .saludo{font-size:21px}
+  .pd{font-size:17px}
+  .controles button{padding:10px 11px;font-size:13px}
+}
+@media (prefers-reduced-motion:reduce){
+  .sobre{animation:none}
+  .tira{animation:none}
+  .carrusel{overflow-x:auto}
+  .pluma{animation:none}
+}
+</style>
+</head>
+<body>
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   TUS DATOS · es lo único que se cambia (todo lo demás es el motor)
+   ───────────────────────────────────────────────────────────────────
+   para     cómo le dicen: "mamá", "ma", "mami" o su nombre
+   de       quiénes firman: "Lucía, Tomi y Juli"
+   hijos    cuántos firman (1 = textos en singular, 2 o más = plural)
+   fecha    lo que va arriba a la derecha de la carta
+   paleta   "rosa" · "lavanda" · "durazno" · "salvia" · "cielo" · "noche"
+   textos   saludo, intro, recuerdos, antesDestacado, destacado, gracias (lista),
+            final, cierre, sub, firma, pd. Lo que no pongas se completa solo.
+   fotos    [{ "src": "...", "texto": "pie de foto" }]  (src puede ser
+            data:image/jpeg;base64,..., una ruta como fotos/01.jpg, un link
+            de Google Drive público o cualquier link a una imagen)
+   musica   { "archivo": "cancion.mp3" } o vacío para la cajita de música
+   velocidad 1 = normal; 1.5 = más rápida; 0.7 = más lenta
+   {para} dentro de un texto se reemplaza por el nombre.
+   Atajo: agregá #Nombre al final del link y la carta dice "Querida Nombre".
+   ═══════════════════════════════════════════════════════════════════ */
+/*CARTA:INICIO*/
+window.CARTA = {
+  "para": "mamá",
+  "de": "",
+  "hijos": 2,
+  "fecha": "Domingo 18 de octubre",
+  "paleta": "rosa",
+  "textos": {},
+  "fotos": [],
+  "musica": { "archivo": "", "generada": true },
+  "mostrarComoHacerla": false
+};
+/*CARTA:FIN*/
+</script>
+<div class="fondo" aria-hidden="true"></div>
+<canvas id="petalos" aria-hidden="true"></canvas>
+<div id="app"></div>
+<noscript><p style="position:relative;z-index:2;color:#fff;text-align:center;padding:40vh 24px;font-family:sans-serif">Esta carta necesita JavaScript para abrirse.</p></noscript>
+
+<script>
+/* ═════════════════ MOTOR · no hace falta tocarlo ═════════════════ */
+(function () {
+  'use strict';
+  var C = window.CARTA || {};
+  function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
+  var app = document.getElementById('app');
+  var root = document.documentElement;
+  var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var VEL = clamp(Number(C.velocidad) || 1, 0.3, 10);
+
+  /* ── paletas ── */
+  var PALETAS = {
+    rosa:    { fondo:'#3a1f2b', fondo2:'#5a2b3c', papel:'#fff8f2', papel2:'#f6ece2', tinta:'#3b2330', suave:'#7a5b68', acento:'#c9506e', acento2:'#f0b3a6', marcador:'rgba(242,160,184,.55)', lacre:'#b2334f', sobre:'#f3d3cf', linea:'rgba(59,35,48,.11)', margen:'rgba(201,80,110,.35)' },
+    lavanda: { fondo:'#262041', fondo2:'#3d3166', papel:'#fbf9ff', papel2:'#eeeaf8', tinta:'#2c2645', suave:'#6e6690', acento:'#7a5fc0', acento2:'#c7b6ef', marcador:'rgba(190,170,240,.55)', lacre:'#6a4fb0', sobre:'#ddd3f3', linea:'rgba(44,38,69,.1)', margen:'rgba(122,95,192,.35)' },
+    durazno: { fondo:'#43261b', fondo2:'#6a3a28', papel:'#fff7ee', papel2:'#f7e8d8', tinta:'#46291d', suave:'#86634f', acento:'#d2653b', acento2:'#f4bf96', marcador:'rgba(246,180,130,.55)', lacre:'#bb502a', sobre:'#f6d6bc', linea:'rgba(70,41,29,.11)', margen:'rgba(210,101,59,.35)' },
+    salvia:  { fondo:'#1e3128', fondo2:'#2f4a3c', papel:'#f9fbf5', papel2:'#ebf1e3', tinta:'#23362b', suave:'#5f7466', acento:'#4a845e', acento2:'#b6d4a6', marcador:'rgba(170,210,150,.6)', lacre:'#3f7552', sobre:'#d6e5cb', linea:'rgba(35,54,43,.1)', margen:'rgba(74,132,94,.35)' },
+    cielo:   { fondo:'#1b2a44', fondo2:'#2a4168', papel:'#f8fbff', papel2:'#e8f0fa', tinta:'#21314b', suave:'#5d6f8c', acento:'#3c70bd', acento2:'#a8c6ee', marcador:'rgba(160,195,240,.6)', lacre:'#2f5ea6', sobre:'#d3e2f5', linea:'rgba(33,49,75,.1)', margen:'rgba(60,112,189,.35)' },
+    noche:   { fondo:'#121014', fondo2:'#2a2030', papel:'#1f1a23', papel2:'#2b2431', tinta:'#f3ebe3', suave:'#b9abb7', acento:'#e5b35f', acento2:'#9b7bb0', marcador:'rgba(229,179,95,.32)', lacre:'#b8863a', sobre:'#3b3142', linea:'rgba(243,235,227,.08)', margen:'rgba(229,179,95,.3)' }
+  };
+  var pal = typeof C.paleta === 'object' && C.paleta ? C.paleta : (PALETAS[String(C.paleta || 'rosa').toLowerCase()] || PALETAS.rosa);
+  if (typeof C.paleta === 'object' && C.paleta) { for (var kp in PALETAS.rosa) if (!pal[kp]) pal[kp] = PALETAS.rosa[kp]; }
+  for (var k in pal) root.style.setProperty('--' + k, pal[k]);
+  var tc = document.querySelector('meta[name="theme-color"]'); if (tc) tc.setAttribute('content', pal.fondo);
+
+  /* ── textos: lo que falte se completa ── */
+  var para = C.para || 'mamá';
+  try {
+    var hn = decodeURIComponent((location.hash || '').replace('#', ''));
+    if (/^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]{2,24}$/.test(hn)) para = hn.charAt(0).toUpperCase() + hn.slice(1);
+  } catch (e) {}
+  var plural = !(Number(C.hijos) === 1);
+  var POR_DEFECTO = plural ? {
+    saludo: 'Querida {para}:',
+    intro: 'Hoy es tu día y no queríamos dejarlo pasar con un mensaje cualquiera. Así que te escribimos esta carta, con algunas fotos que dicen más que cualquier palabra.',
+    recuerdos: 'Mirando estas fotos nos damos cuenta de todo lo que vivimos juntos. Los cumpleaños, los viajes, las tardes de nada que terminaban siendo las mejores. En todas estás vos, aunque a veces seas la que saca la foto.',
+    antesDestacado: 'Hay algo que queremos que sepas:',
+    destacado: 'Nunca supimos cuánto te costaba. Vos hacías que todo pareciera fácil.',
+    gracias: ['Por cuidarnos siempre, incluso cuando no nos dábamos cuenta.', 'Por las comidas, los consejos y los «avisame cuando llegás».', 'Por creer en nosotros antes que nadie.', 'Por estar. Siempre.'],
+    final: 'Todo lo que somos tiene algo tuyo. Gracias por ser nuestra casa.',
+    cierre: 'Feliz día, {para}', sub: 'A la mejor mamá del mundo.',
+    firma: 'Con amor,', pd: 'P. D.: Hoy te toca descansar. Nosotros nos encargamos de todo.'
+  } : {
+    saludo: 'Querida {para}:',
+    intro: 'Hoy es tu día y no quería dejarlo pasar con un mensaje cualquiera. Así que te escribí esta carta, con algunas fotos que dicen más que cualquier palabra.',
+    recuerdos: 'Mirando estas fotos me doy cuenta de todo lo que vivimos juntos. Los cumpleaños, los viajes, las tardes de nada que terminaban siendo las mejores. En todas estás vos, aunque a veces seas la que saca la foto.',
+    antesDestacado: 'Hay algo que quiero que sepas:',
+    destacado: 'Nunca supe cuánto te costaba. Vos hacías que todo pareciera fácil.',
+    gracias: ['Por cuidarme siempre, incluso cuando no me daba cuenta.', 'Por las comidas, los consejos y los «avisame cuando llegás».', 'Por creer en mí antes que nadie.', 'Por estar. Siempre.'],
+    final: 'Todo lo que soy tiene algo tuyo. Gracias por ser mi casa.',
+    cierre: 'Feliz día, {para}', sub: 'A la mejor mamá del mundo.',
+    firma: 'Con todo mi amor,', pd: 'P. D.: Hoy te toca descansar. Yo me encargo de todo.'
+  };
+  var T = {}, TX = C.textos || {};
+  for (var kt in POR_DEFECTO) T[kt] = TX[kt] != null && TX[kt] !== '' ? TX[kt] : POR_DEFECTO[kt];
+  var de = C.de != null && C.de !== '' ? C.de : (plural ? 'Tus hijos' : '');
+  function txt(s) { return String(s == null ? '' : s).replace(/\{para\}/g, para); }
+  document.title = 'Para ' + para + ' 💌';
+
+  /* ── fotos: rutas, data: o links de Google Drive ── */
+  function fuente(s) {
+    s = String(s || '');
+    var m = /drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:[^#]*&)?id=|thumbnail\?(?:[^#]*&)?id=)([\w-]{20,})/.exec(s);
+    return m ? 'https://lh3.googleusercontent.com/d/' + m[1] + '=w1600' : s;
+  }
+  var fotos = [];
+  function cargarFotos(lista) {
+    fotos = [];
+    (lista || []).forEach(function (f) {
+      if (typeof f === 'string') f = { src: f };
+      if (f && f.src) fotos.push({ src: fuente(f.src), texto: f.texto || '' });
+    });
+  }
+  cargarFotos(C.fotos);
+
+  /* ── utilidades ── */
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function svg(path, vb) {
+    var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', vb || '0 0 24 24'); s.setAttribute('aria-hidden', 'true');
+    s.innerHTML = path; return s;
+  }
+  var CORAZON = '<path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.5 2.6 4.5 6.4 4.1c2.2-.2 4 .9 5.6 3 1.6-2.1 3.4-3.2 5.6-3 3.8.4 5.5 4.4 4 7.7C19.5 16.4 12 21 12 21z"/>';
+  var I = {
+    play: '<path d="M7 4.5v15l13-7.5z"/>', pausa: '<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>',
+    todo: '<path d="M5 5l7 7-7 7M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
+    son: '<path d="M4 9h4l5-4v14l-5-4H4zM16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none"/>',
+    mudo: '<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9l5 6M22 9l-5 6" stroke="currentColor" stroke-width="2" fill="none"/>',
+    arriba: '<path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
+  };
+  var FLOR = '<g fill="none" stroke="var(--acento)" stroke-width="1.6" stroke-linecap="round" opacity=".7"><path d="M10 34h36M74 34h36"/></g>' +
+    '<g transform="translate(60 34)"><g fill="var(--acento2)"><ellipse rx="6" ry="12" transform="translate(0 -9)"/><ellipse rx="6" ry="12" transform="rotate(72) translate(0 -9)"/>' +
+    '<ellipse rx="6" ry="12" transform="rotate(144) translate(0 -9)"/><ellipse rx="6" ry="12" transform="rotate(216) translate(0 -9)"/><ellipse rx="6" ry="12" transform="rotate(288) translate(0 -9)"/></g>' +
+    '<circle r="5" fill="var(--acento)"/></g>';
+
+  function polaroid(f, conPie) {
+    var fig = el('figure', 'pol');
+    var box = el('div', 'foto');
+    var img = el('img');
+    img.alt = f.texto || ''; img.decoding = 'async';
+    img.onerror = function () { fig.classList.add('rota'); };
+    img.src = f.src;
+    box.appendChild(img); fig.appendChild(box);
+    if (conPie) fig.appendChild(el('figcaption', '', f.texto || ''));
+    return fig;
+  }
+
+  /* ───────── el sobre ───────── */
+  var escena = el('section', 'escena');
+  escena.appendChild(el('p', 'ojo', 'Tenés una carta'));
+  var sobre = el('div', 'sobre');
+  sobre.appendChild(el('div', 'sobre-atras'));
+  var papelito = el('div', 'papelito'); sobre.appendChild(papelito);
+  var bolsillo = el('div', 'bolsillo');
+  bolsillo.appendChild(el('div', 'para-sobre', 'Para ' + para));
+  if (de) bolsillo.appendChild(el('div', 'de-sobre', 'De: ' + de));
+  sobre.appendChild(bolsillo);
+  var solapa = el('div', 'solapa'); solapa.appendChild(el('i')); sobre.appendChild(solapa);
+  var lacre = el('button', 'lacre'); lacre.type = 'button'; lacre.setAttribute('aria-label', 'Abrir la carta');
+  lacre.appendChild(svg(CORAZON)); sobre.appendChild(lacre);
+  escena.appendChild(sobre);
+  var bAbrir = el('button', 'btn'); bAbrir.type = 'button';
+  bAbrir.appendChild(svg(I.play)); bAbrir.appendChild(document.createTextNode('Tocá para abrir'));
+  escena.appendChild(bAbrir);
+  var cfgM = C.musica || {};
+  if (cfgM.archivo || cfgM.generada !== false) escena.appendChild(el('p', 'nota', 'Con música · subí el volumen'));
+  var bProbar = null, entrada = null;
+  if (!fotos.length) {
+    bProbar = el('button', 'probar', 'Probar con mis fotos'); bProbar.type = 'button';
+    entrada = el('input'); entrada.type = 'file'; entrada.accept = 'image/*'; entrada.multiple = true; entrada.hidden = true;
+    escena.appendChild(bProbar); escena.appendChild(entrada);
+  }
+  app.appendChild(escena);
+
+  /* ───────── la carta ───────── */
+  var carta = el('main', 'carta'); carta.hidden = true;
+  app.appendChild(carta);
+  var pasos = [], bloques = [], todasPols = [], pluma = el('span', 'pluma');
+
+  function escribible(tag, cls, texto) {
+    var p = el(tag, cls);
+    var chars = [];
+    txt(texto).split(' ').forEach(function (w, i) {
+      if (i) p.appendChild(document.createTextNode(' '));
+      var pw = el('span', 'palabra');
+      for (var j = 0; j < w.length; j++) { var c = el('span', 'c', w.charAt(j)); pw.appendChild(c); chars.push(c); }
+      p.appendChild(pw);
+    });
+    return { el: p, chars: chars };
+  }
+  function pasoTexto(e, pausa, alTerminar) {
+    var i = 0;
+    pasos.push({ hacer: function () {
+      if (i < e.chars.length) {
+        var c = e.chars[i++];
+        c.classList.add('t');
+        if (c.nextSibling) c.parentNode.insertBefore(pluma, c.nextSibling); else c.parentNode.appendChild(pluma);
+        cursor = pluma;
+        var ch = c.textContent;
+        return { ms: ch === '.' || ch === '!' || ch === '?' || ch === ':' ? 300 : ch === ',' ? 160 : 36 };
+      }
+      if (alTerminar) alTerminar();
+      return { ms: pausa == null ? 520 : pausa, listo: true };
+    }, todo: function () { e.chars.forEach(function (c) { c.classList.add('t'); }); if (alTerminar) alTerminar(); } });
+  }
+  function texto(tag, cls, t, pausa, padre, alTerminar) {
+    if (!t) return null;
+    var e = escribible(tag, cls, t);
+    (padre || carta).appendChild(e.el);
+    pasoTexto(e, pausa, alTerminar);
+    return e;
+  }
+  function separadorFlor() {
+    var d = el('div', 'bloque flor-sep'); d.appendChild(svg(FLOR, '0 0 120 68')); carta.appendChild(d);
+    bloques.push({ el: d, tipo: 'flor' });
+  }
+  function lluvia(lista) {
+    var d = el('div', 'bloque pila'); carta.appendChild(d);
+    var pols = lista.map(function (f) { var p = { el: polaroid(f, true) }; d.appendChild(p.el); return p; });
+    var b = { el: d, tipo: 'pila', pols: pols };
+    bloques.push(b);
+    var k = 0;
+    pasos.push({ hacer: function () {
+      cursor = d;
+      if (k < pols.length) { lanzar(pols[k++], b); return { ms: 430 }; }
+      return { ms: 1100, listo: true };
+    }, todo: function () { pols.forEach(function (p) { asentar(p); }); } });
+  }
+  function carrusel(lista) {
+    var d = el('div', 'bloque carrusel'); carta.appendChild(d);
+    var mitad = Math.ceil(lista.length / 2);
+    var grupos = lista.length >= 8 ? [lista.slice(0, mitad), lista.slice(mitad)] : [lista, lista.slice().reverse()];
+    var filas = grupos.map(function (g, gi) {
+      var fila = el('div', 'fila' + (gi ? ' rev' : ''));
+      var tira = el('div', 'tira');
+      var rep = g.concat(g);
+      while (rep.length < 8) rep = rep.concat(g, g);
+      rep.forEach(function (f, i) {
+        var p = polaroid(f, false);
+        p.style.setProperty('--r', ((i * 37) % 9 - 4) + 'deg');
+        tira.appendChild(p);
+      });
+      tira.style.setProperty('--dur', Math.max(24, rep.length * 3.2) + 's');
+      fila.appendChild(tira); d.appendChild(fila);
+      return fila;
+    });
+    bloques.push({ el: d, tipo: 'carrusel' });
+    pasos.push({ hacer: function () {
+      cursor = d;
+      filas.forEach(function (f, i) { setTimeout(function () { f.classList.add('on'); }, i * 350); });
+      return { ms: 3200, listo: true };
+    }, todo: function () { filas.forEach(function (f) { f.classList.add('on'); }); } });
+  }
+  function corazon(lista) {
+    var d = el('div', 'bloque corazon'); carta.appendChild(d);
+    var pols = lista.map(function (f) { var p = { el: polaroid(f, false) }; d.appendChild(p.el); return p; });
+    var b = { el: d, tipo: 'corazon', pols: pols };
+    bloques.push(b);
+    var k = 0;
+    pasos.push({ hacer: function () {
+      cursor = d;
+      if (k < pols.length) { lanzar(pols[k++], b); return { ms: 150 }; }
+      return { ms: 1400, listo: true };
+    }, todo: function () { pols.forEach(function (p) { asentar(p); }); } });
+  }
+
+  function construir() {
+    carta.innerHTML = ''; pasos = []; bloques = []; todasPols = [];
+    var n = fotos.length;
+    var A = [], B = [], Cc = [], resto;
+    if (n <= 4) A = fotos.slice();
+    else if (n <= 7) { A = fotos.slice(0, 3); B = fotos.slice(3); }
+    else { A = fotos.slice(0, 3); Cc = fotos.slice(n - 3); B = fotos.slice(3, n - 3); }
+    if (B.length && B.length < 3) { A = A.concat(B); B = []; }
+    resto = fotos.slice(0, 24);
+
+    if (C.fecha) texto('p', 'fecha', C.fecha, 300);
+    texto('p', 'saludo', T.saludo, 700);
+    texto('p', '', T.intro);
+    if (A.length) lluvia(A); else separadorFlor();
+    texto('p', '', T.recuerdos);
+    if (B.length) carrusel(B);
+    texto('p', '', T.antesDestacado, 400);
+    if (T.destacado) {
+      var pd0 = el('p', 'destacado'); var marca = el('span', 'marca'); pd0.appendChild(marca); carta.appendChild(pd0);
+      var ed = escribible('span', '', T.destacado);
+      while (ed.el.firstChild) marca.appendChild(ed.el.firstChild);
+      pasoTexto({ el: pd0, chars: ed.chars }, 200);
+      pasos.push({ hacer: function () { marca.classList.add('on'); return { ms: 1500, listo: true }; }, todo: function () { marca.classList.add('on'); } });
+    }
+    if (Cc.length) lluvia(Cc);
+    var gl = [].concat(T.gracias || []);
+    if (gl.length) {
+      var ul = el('ul', 'lista'); carta.appendChild(ul);
+      gl.forEach(function (g) {
+        var e = escribible('li', '', g); ul.appendChild(e.el);
+        pasos.push({ hacer: function () { e.el.classList.add('on'); return { ms: 200, listo: true }; }, todo: function () { e.el.classList.add('on'); } });
+        pasoTexto(e, 450);
+      });
+    }
+    texto('p', '', T.final, 900);
+    if (resto.length >= 6) corazon(resto); else separadorFlor();
+    var g = el('div', 'bloque grande');
+    g.appendChild(document.createTextNode(txt(T.cierre)));
+    if (T.sub) g.appendChild(el('small', '', txt(T.sub)));
+    carta.appendChild(g);
+    bloques.push({ el: g, tipo: 'grande' });
+    pasos.push({ hacer: function () { cursor = g; g.classList.add('on'); petalos.fiesta(9); return { ms: 2200, listo: true }; }, todo: function () { g.classList.add('on'); } });
+    var fp = el('p', 'firma'); carta.appendChild(fp);
+    var f1 = escribible('span', '', T.firma); fp.appendChild(f1.el); pasoTexto(f1, 250);
+    if (de) { var f2 = escribible('span', '', de); fp.appendChild(f2.el); pasoTexto(f2, 600); }
+    texto('p', 'pd', T.pd, 600);
+
+    var fin = el('div', 'fin'); fin.hidden = true;
+    var bArriba = el('button', 'btn'); bArriba.type = 'button';
+    bArriba.appendChild(svg(I.arriba)); bArriba.appendChild(document.createTextNode('Volver a leer'));
+    bArriba.addEventListener('click', function () { try { window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); } catch (e) { window.scrollTo(0, 0); } });
+    fin.appendChild(bArriba);
+    if (C.mostrarComoHacerla) {
+      var hz = el('div', 'hacer');
+      hz.innerHTML = '<b>¿Querés hacerle una carta así a tu mamá?</b> Es gratis y no hace falta saber de computación: ' +
+        'entrá a <a href="https://github.com/francoboglione/diadelamadre" target="_blank" rel="noopener">github.com/francoboglione/diadelamadre</a>, ' +
+        'copiá el prompt y pegalo en ChatGPT o en Claude junto con tus fotos.';
+      fin.appendChild(hz);
+    }
+    carta.appendChild(fin);
+    pasos.push({ hacer: function () { terminar(); return { ms: 0, listo: true }; }, todo: function () {} });
+    medir();
+  }
+
+  /* ───────── geometría ───────── */
+  var vh = window.innerHeight;
+  function lh() { return parseFloat(getComputedStyle(carta).lineHeight) || 34; }
+  function redondear(elm, h) { var L = lh(); elm.style.height = Math.ceil(h / L) * L + 'px'; }
+  function medir() {
+    vh = window.innerHeight;
+    if (carta.hidden) return;
+    bloques.forEach(function (b) {
+      var W = b.el.clientWidth;
+      if (b.tipo === 'pila') {
+        var n = b.pols.length, w = Math.min(W * (n > 2 ? 0.5 : 0.58), 250);
+        b.el.style.setProperty('--w', w + 'px');
+        redondear(b.el, w * 1.42 + w * 0.42 + 30);
+        b.pols.forEach(function (p, i) {
+          p.x = (i - (n - 1) / 2) * Math.min(w * 0.5, (W - w) / Math.max(1, n - 1));
+          p.y = (i % 2 ? 1 : -1) * w * 0.12;
+          p.r = (i % 2 ? 1 : -1) * (4 + (i * 3) % 5);
+          poner(p);
+        });
+      } else if (b.tipo === 'corazon') {
+        var S = Math.min(W, 540), m = b.pols.length;
+        var wc = Math.max(46, Math.min(S * 0.19, 110));
+        b.el.style.setProperty('--w', wc + 'px');
+        var H = S * 0.9 + wc * 0.3;
+        redondear(b.el, H);
+        var rx = (S - wc) / 2, ry = (S * 0.9 - wc * 1.28) / 2;
+        var cv = function (t) { return -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)); };
+        var lo = 1e9, hi = -1e9;
+        for (var q = 0; q < 64; q++) { var v = cv(Math.PI * 2 * q / 64); if (v < lo) lo = v; if (v > hi) hi = v; }
+        b.pols.forEach(function (p, i) {
+          var t = Math.PI * 2 * i / m;
+          p.x = Math.pow(Math.sin(t), 3) * rx;
+          p.y = (cv(t) - (lo + hi) / 2) / ((hi - lo) / 2) * ry;
+          p.r = ((i * 37) % 15) - 7;
+          poner(p);
+        });
+      } else if (b.tipo === 'carrusel') {
+        var wt = clamp(W * 0.36, 120, 190);
+        b.el.style.setProperty('--w', wt + 'px');
+        b.el.style.height = '';
+        redondear(b.el, b.el.offsetHeight);
+      } else if (b.tipo === 'grande') {
+        b.el.style.height = '';
+        redondear(b.el, b.el.scrollHeight + lh());
+      } else if (b.tipo === 'flor') {
+        redondear(b.el, 68);
+      }
+    });
+  }
+  function transformar(p, x, y, r, s) {
+    p.el.style.transform = 'translate(-50%,-50%) translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0) rotate(' + r.toFixed(1) + 'deg) scale(' + s + ')';
+  }
+  function poner(p) { if (p.puesto) transformar(p, p.x, p.y, p.r, 1); }
+  function asentar(p) {
+    p.puesto = true; p.el.classList.remove('vuela'); p.el.classList.add('ya');
+    p.el.style.setProperty('--alto', '0'); transformar(p, p.x, p.y, p.r, 1);
+  }
+  var lado = 0;
+  function lanzar(p, b) {
+    if (reduce) { asentar(p); return; }
+    var W = window.innerWidth, a = lado++ % 4;
+    var sx = a === 0 ? -W : a === 1 ? W : (Math.random() - 0.5) * W;
+    var sy = a === 2 ? -vh * 0.9 : a === 3 ? vh * 0.7 : -vh * 0.25;
+    p.el.classList.remove('ya', 'vuela');
+    p.el.style.setProperty('--alto', '1');
+    transformar(p, p.x + sx, p.y + sy, p.r + (a % 2 ? 50 : -50), 1.7);
+    p.el.style.visibility = 'visible';
+    void p.el.offsetWidth;
+    p.el.classList.add('vuela');
+    p.el.style.setProperty('--alto', '0');
+    transformar(p, p.x, p.y, p.r, 1);
+    p.puesto = true;
+  }
+
+  /* ───────── el que escribe y la página que baja sola ───────── */
+  var ip = 0, espera = 0, ult = 0, pausado = false, siguiendo = true, terminado = false, corriendo = false, cursor = null;
+  function cuadro(ts) {
+    if (!corriendo) return;
+    var dt = ult ? Math.min(64, ts - ult) : 16; ult = ts;
+    if (!pausado && !terminado) {
+      espera -= dt;
+      var guarda = 0;
+      while (espera <= 0 && !terminado && guarda++ < 40) {
+        var p = pasos[ip];
+        if (!p) { terminar(); break; }
+        var r = p.hacer();
+        espera += r.ms / VEL;
+        if (r.listo) ip++;
+      }
+    }
+    if (siguiendo && !pausado && cursor) {
+      var rc = cursor.getBoundingClientRect(), y = window.pageYOffset;
+      var obj = y + (cursor === pluma ? rc.top - vh * 0.58 : rc.bottom - vh * 0.88);
+      if (obj > y + 1) window.scrollTo(0, y + (obj - y) * Math.min(1, dt / 1000 * 2.8));
+    }
+    requestAnimationFrame(cuadro);
+  }
+  function verTodo() {
+    for (; ip < pasos.length; ip++) pasos[ip].todo();
+    terminar();
+  }
+  var ctrl, bPausa, bTodo, bSon;
+  function terminar() {
+    if (terminado) return;
+    terminado = true;
+    if (pluma.parentNode) pluma.parentNode.removeChild(pluma);
+    var fin = carta.querySelector('.fin'); if (fin) fin.hidden = false;
+    if (ctrl) ctrl.hidden = true;
+    setTimeout(function () { musica.apagar(); }, 25000);
+  }
+  function etiqueta(b, icono, t) { b.innerHTML = ''; b.appendChild(svg(icono)); b.appendChild(document.createTextNode(t)); }
+  function armarControles() {
+    ctrl = el('div', 'controles');
+    bPausa = el('button'); bPausa.type = 'button';
+    bTodo = el('button'); bTodo.type = 'button'; etiqueta(bTodo, I.todo, 'Ver todo');
+    bSon = el('button'); bSon.type = 'button';
+    ctrl.appendChild(bPausa); ctrl.appendChild(bTodo);
+    if (musica.hay) ctrl.appendChild(bSon);
+    document.body.appendChild(ctrl);
+    pintarPausa(); pintarSon();
+    bPausa.addEventListener('click', function () {
+      if (pausado || !siguiendo) { pausado = false; siguiendo = true; } else pausado = true;
+      pintarPausa();
+    });
+    bTodo.addEventListener('click', verTodo);
+    bSon.addEventListener('click', function () { mudo = !mudo; musica.silenciar(mudo); if (!mudo) musica.tocar(); pintarSon(); });
+    var soltar = function () { if (!terminado && siguiendo) { siguiendo = false; pintarPausa(); } };
+    window.addEventListener('wheel', soltar, { passive: true });
+    window.addEventListener('touchstart', soltar, { passive: true });
+  }
+  function pintarPausa() { if (pausado || !siguiendo) etiqueta(bPausa, I.play, 'Seguir'); else etiqueta(bPausa, I.pausa, 'Pausar'); }
+  var mudo = false;
+  function pintarSon() { etiqueta(bSon, mudo ? I.mudo : I.son, mudo ? 'Sin sonido' : 'Sonido'); }
+
+  /* ───────── abrir el sobre ───────── */
+  var abriendo = false;
+  function abrir() {
+    if (abriendo) return; abriendo = true;
+    musica.tocar();
+    construir();
+    if (reduce) { mostrarCarta(); verTodo(); return; }
+    sobre.classList.add('abierto');
+    setTimeout(function () { sobre.classList.add('sale'); }, 850);
+    setTimeout(function () {
+      var r = papelito.getBoundingClientRect();
+      var cort = el('div', 'cortina');
+      cort.style.left = r.left + 'px'; cort.style.top = r.top + 'px'; cort.style.width = r.width + 'px'; cort.style.height = r.height + 'px';
+      document.body.appendChild(cort);
+      void cort.offsetWidth;
+      cort.style.left = '0px'; cort.style.top = '0px'; cort.style.width = '100%'; cort.style.height = '100%'; cort.style.borderRadius = '0';
+      escena.classList.add('fuera');
+      setTimeout(function () {
+        mostrarCarta();
+        cort.style.transition = 'opacity .5s ease'; cort.style.opacity = '0';
+        setTimeout(function () { if (cort.parentNode) cort.parentNode.removeChild(cort); }, 600);
+        empezar();
+      }, 800);
+    }, 1750);
+  }
+  function mostrarCarta() {
+    escena.hidden = true; carta.hidden = false; window.scrollTo(0, 0);
+    petalos.modo('carta');
+    medir();
+  }
+  function empezar() {
+    armarControles();
+    corriendo = true; ult = 0; espera = 500;
+    requestAnimationFrame(cuadro);
+  }
+  bAbrir.addEventListener('click', abrir);
+  lacre.addEventListener('click', abrir);
+  if (bProbar) {
+    bProbar.addEventListener('click', function () { entrada.click(); });
+    entrada.addEventListener('change', function () {
+      var fs = Array.prototype.slice.call(entrada.files || []).filter(function (f) { return /^image\//.test(f.type); });
+      if (!fs.length) return;
+      cargarFotos(fs.map(function (f) { return { src: URL.createObjectURL(f), texto: '' }; }));
+      bProbar.textContent = '✓ ' + fs.length + (fs.length === 1 ? ' foto cargada' : ' fotos cargadas') + ' (solo en este dispositivo)';
+    });
+  }
+  var tRes; window.addEventListener('resize', function () { clearTimeout(tRes); tRes = setTimeout(function () { medir(); petalos.medir(); }, 150); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(medir);
+
+  /* ───────── pétalos ───────── */
+  var petalos = (function () {
+    var cv = document.getElementById('petalos'), ctx = cv.getContext && cv.getContext('2d');
+    var api = { modo: function () {}, fiesta: function () {}, medir: function () {} };
+    if (!ctx || reduce) { cv.style.display = 'none'; return api; }
+    var dpr = Math.min(2, window.devicePixelRatio || 1), W = 0, H = 0, ps = [], cuantos = 1, hasta = 0, ultP = 0;
+    var COL = [pal.acento2, pal.marcador.replace(/[\d.]+\)$/, '.9)'), '#ffe3e6', pal.acento];
+    function nuevo(arriba) {
+      return { x: Math.random() * W, y: arriba ? -20 - Math.random() * H * 0.4 : Math.random() * H, s: 5 + Math.random() * 8, vy: 24 + Math.random() * 40,
+        vx: -8 + Math.random() * 16, a: Math.random() * 6.28, va: -1 + Math.random() * 2, f: Math.random() * 6.28, c: COL[(Math.random() * COL.length) | 0] };
+    }
+    api.medir = function () {
+      W = window.innerWidth; H = window.innerHeight;
+      cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var n = W < 600 ? 36 : 56; while (ps.length < n) ps.push(nuevo(false)); ps.length = n;
+    };
+    api.modo = function (m) { cuantos = m === 'carta' ? 0 : 1; };
+    api.fiesta = function (seg) { hasta = Date.now() + seg * 1000; ps.forEach(function (p, i) { if (i % 2) { p.y = -20 - Math.random() * H * 0.5; } }); };
+    function cuadroP(ts) {
+      var dt = ultP ? Math.min(0.05, (ts - ultP) / 1000) : 0.016; ultP = ts;
+      ctx.clearRect(0, 0, W, H);
+      var fiesta = Date.now() < hasta, act = Math.round(ps.length * (fiesta ? 1 : cuantos * 0.6));
+      for (var i = 0; i < ps.length; i++) {
+        var p = ps[i];
+        p.f += dt * 1.4; p.a += p.va * dt; p.y += p.vy * (fiesta ? 1.5 : 1) * dt; p.x += (p.vx + Math.sin(p.f) * 18) * dt;
+        if (p.y > H + 20 || p.x < -30 || p.x > W + 30) ps[i] = p = nuevo(true);
+        if (i >= act) continue;
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a); ctx.scale(1, 0.55 + 0.45 * Math.abs(Math.sin(p.f)));
+        ctx.globalAlpha = 0.9; ctx.fillStyle = p.c; ctx.beginPath();
+        ctx.moveTo(0, -p.s); ctx.bezierCurveTo(p.s * 0.9, -p.s * 0.6, p.s * 0.7, p.s * 0.7, 0, p.s);
+        ctx.bezierCurveTo(-p.s * 0.7, p.s * 0.7, -p.s * 0.9, -p.s * 0.6, 0, -p.s); ctx.fill(); ctx.restore();
+      }
+      requestAnimationFrame(cuadroP);
+    }
+    api.medir();
+    requestAnimationFrame(cuadroP);
+    return api;
+  })();
+
+  /* ───────── música: mp3 propio o cajita de música generada ───────── */
+  var musica = (function () {
+    var vol = cfgM.volumen != null ? cfgM.volumen : 0.85;
+    var nada = { hay: false, tocar: function () {}, silenciar: function () {}, apagar: function () {} };
+    if (cfgM.archivo) {
+      var a = new Audio(cfgM.archivo), arranco = false; a.preload = 'auto'; a.volume = vol;
+      return { hay: true,
+        tocar: function () { if (!arranco) { try { a.currentTime = cfgM.desde || 0; } catch (e) {} arranco = true; } var pr = a.play(); if (pr && pr.catch) pr.catch(function () {}); },
+        silenciar: function (m) { a.muted = m; },
+        apagar: function () { var v = a.volume, t = setInterval(function () { v -= 0.05; if (v <= 0) { a.pause(); clearInterval(t); } else a.volume = v; }, 300); } };
+    }
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (cfgM.generada === false || !AC) return nada;
+    var ac = null, master = null, rev = null, prox = 0, paso = 0, timer = null, silencio = false;
+    var BEAT = 60 / 70, ACORDES = [[53, 57, 60], [50, 53, 57], [46, 50, 53], [48, 52, 55]];
+    var ARP = [0, 1, 2, 3, 2, 1, 2, 1], MEL = [81, 0, 79, 77, 0, 77, 76, 0, 74, 0, 72, 74, 0, 77, 76, 0];
+    function hz(m) { return 440 * Math.pow(2, (m - 69) / 12); }
+    function nota(m, t, dur, tipo, v, at) {
+      var o = ac.createOscillator(), g = ac.createGain();
+      o.type = tipo; o.frequency.value = hz(m);
+      g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + at); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(master); g.connect(rev); o.start(t); o.stop(t + dur + 0.05);
+    }
+    function campana(m, t, v) { nota(m, t, 1.6, 'sine', v, 0.006); nota(m + 12, t, 0.7, 'sine', v * 0.25, 0.004); }
+    function programar() {
+      while (prox < ac.currentTime + 0.4) {
+        var cmp = Math.floor(paso / 8) % 4, k = paso % 8, a0 = ACORDES[cmp];
+        var tonos = [a0[0] + 12, a0[1] + 12, a0[2] + 12, a0[0] + 24];
+        if (k === 0) { nota(a0[0] - 12, prox, BEAT * 4.2, 'sine', 0.07, 0.05); for (var i = 0; i < 3; i++) nota(a0[i], prox, BEAT * 4.4, 'triangle', 0.022, 0.9); }
+        campana(tonos[ARP[k]], prox, 0.045);
+        var ml = MEL[paso % 16]; if (paso >= 32 && ml && k % 2 === 0) campana(ml, prox + 0.01, 0.06);
+        prox += BEAT / 2; paso++;
+      }
+    }
+    return { hay: true,
+      tocar: function () {
+        try {
+          if (!ac) {
+            ac = new AC();
+            master = ac.createGain(); master.gain.value = 0.0001; master.connect(ac.destination);
+            var len = ac.sampleRate * 2.6, buf = ac.createBuffer(2, len, ac.sampleRate);
+            for (var ch = 0; ch < 2; ch++) { var d = buf.getChannelData(ch); for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.6); }
+            var cvv = ac.createConvolver(); cvv.buffer = buf;
+            rev = ac.createGain(); rev.gain.value = 0.32; rev.connect(cvv); cvv.connect(master);
+            prox = ac.currentTime + 0.15;
+          }
+          if (ac.state === 'suspended' && ac.resume) ac.resume();
+          master.gain.cancelScheduledValues(ac.currentTime);
+          master.gain.setTargetAtTime(silencio ? 0.0001 : 0.55 * vol, ac.currentTime, 0.8);
+          if (!timer) timer = setInterval(programar, 100);
+          programar();
+        } catch (e) {}
+      },
+      silenciar: function (m) { silencio = m; if (ac) master.gain.setTargetAtTime(m ? 0.0001 : 0.55 * vol, ac.currentTime, 0.3); },
+      apagar: function () { if (!ac) return; master.gain.setTargetAtTime(0.0001, ac.currentTime, 2.5); setTimeout(function () { clearInterval(timer); timer = null; }, 10000); } };
+  })();
+})();
+</script>
+</body>
+</html>
