@@ -217,6 +217,12 @@ button{font:inherit;color:inherit}
 
 .fin{text-align:center;font-family:var(--ui);font-size:16px;line-height:1.5}
 .fin .btn{background:var(--acento);color:#fff}
+.credito{margin:calc(var(--lh) * 2) 0 0;padding-top:18px;border-top:1px solid var(--linea);font-family:var(--ui);font-size:14px;line-height:1.5;color:var(--suave);text-align:center}
+.credito a{color:var(--acento);font-weight:600;text-decoration:none}
+.credito .credito-cta{display:inline-block;margin-top:10px;padding:10px 18px;border-radius:999px;border:1.5px solid var(--acento2);font-size:14.5px}
+.credito .credito-cta::after{content:" →"}
+.letra-grande .credito{font-size:16px}
+.letra-grande .credito .credito-cta{font-size:16.5px;padding:12px 20px}
 .hacer{margin:calc(var(--lh) * 2) 0 0;text-align:left;font-family:var(--ui);font-size:15px;line-height:1.55;color:var(--suave);background:var(--papel2);border-radius:14px;padding:18px 18px 16px}
 .hacer b{color:var(--tinta)}
 .hacer a{color:var(--acento)}
@@ -773,6 +779,17 @@ window.CARTA = {
         'entrá a <a href="https://github.com/francoboglione/diadelamadre" target="_blank" rel="noopener">github.com/francoboglione/diadelamadre</a>, ' +
         'copiá el prompt y pegalo en ChatGPT o en Claude junto con tus fotos.';
       fin.appendChild(hz);
+    }
+    if (C.credito && C.credito.url) {
+      var cr = el('div', 'credito');
+      cr.appendChild(document.createTextNode(C.credito.texto || 'Hecho con ♥ por '));
+      var ca = el('a', '', C.credito.marca || C.credito.url); ca.href = C.credito.url; ca.target = '_blank'; ca.rel = 'noopener';
+      cr.appendChild(ca);
+      if (C.credito.invitacion) {
+        var ci = el('a', 'credito-cta', C.credito.invitacion); ci.href = C.credito.contacto || C.credito.url; ci.target = '_blank'; ci.rel = 'noopener';
+        cr.appendChild(ci);
+      }
+      fin.appendChild(cr);
     }
     carta.appendChild(fin);
     pasos.push({ hacer: function () { terminar(); return { ms: 0, listo: true }; }, todo: function () {} });
