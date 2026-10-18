@@ -69,6 +69,8 @@ button{font:inherit;color:inherit}
 .btn svg{width:18px;height:18px;fill:currentColor}
 .nota{margin:-12px 0 0;font-size:13px;color:rgba(255,255,255,.72)}
 .probar{border:1px dashed rgba(255,255,255,.45);background:none;color:rgba(255,255,255,.85);border-radius:999px;padding:10px 18px;font-size:14px;cursor:pointer}
+.cancion{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--acento2);border-radius:999px;padding:11px 18px;font-size:15px;font-weight:600;color:#fff;text-decoration:none;background:rgba(255,255,255,.06)}
+.cancion-nota{margin:-16px 0 0;font-size:12.5px;color:rgba(255,255,255,.62);max-width:300px;line-height:1.4}
 .escena.fuera{opacity:0;pointer-events:none}
 .cortina{position:fixed;z-index:6;background:var(--papel);border-radius:3px;transition:all .75s cubic-bezier(.6,0,.2,1)}
 
@@ -135,6 +137,31 @@ button{font:inherit;color:inherit}
 .tira .pol .foto{padding-top:100%}
 @keyframes desliza{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
+/* poema */
+.estrofa{margin:0 0 var(--lh);padding-left:.8em;border-left:3px solid var(--acento2);color:var(--tinta)}
+.carta .estrofa p{margin:0}
+/* regalos */
+.regalos-tit{font-weight:700}
+.regalos{display:flex;flex-direction:column;gap:14px;padding:4px 0 6px}
+.regalo{display:grid;perspective:900px;opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+.regalo.on{opacity:1;transform:none}
+.regalo[role=button]{cursor:pointer}
+.cara{grid-area:1/1;background:#fffdfb;border:1.5px solid var(--acento2);border-radius:16px;padding:16px 16px 14px;line-height:1.4;font-size:.95em;
+  box-shadow:0 1px 2px rgba(0,0,0,.06),0 16px 30px -20px rgba(0,0,0,.5);-webkit-backface-visibility:hidden;backface-visibility:hidden;
+  transition:transform .7s cubic-bezier(.3,.7,.2,1),opacity .35s ease;display:flex;flex-direction:column;gap:8px;justify-content:center}
+.cara p{margin:0}
+.atras{transform:rotateY(-180deg);opacity:0;background:var(--papel2);text-align:center;align-items:center}
+.vuelta .frente{transform:rotateY(180deg);opacity:0}
+.vuelta .atras{transform:none;opacity:1}
+.reg-top{display:flex;align-items:center;gap:10px}
+.reg-ico{font-size:28px;line-height:1}
+.reg-top h3{margin:0;font-family:var(--display);font-weight:400;font-size:22px;line-height:1.15;color:var(--acento)}
+.hecho .frente{background:var(--papel2)}
+.chip{align-self:flex-start;font-family:var(--ui);font-size:12.5px;font-weight:600;letter-spacing:.02em;border-radius:999px;padding:6px 12px;background:var(--acento);color:#fff}
+.chip.ok{background:none;color:var(--acento);border:1.5px solid var(--acento2)}
+.atras .chip{align-self:center;background:none;color:var(--suave);border:1px solid var(--linea)}
+.cuenta{font-family:var(--display);color:var(--acento);font-size:24px}
+.perras{width:min(220px,80%);height:auto;margin:2px auto 0}
 .flor-sep{display:flex;justify-content:center;align-items:center;opacity:.85}
 .flor-sep svg{width:120px;height:68px}
 
@@ -163,6 +190,7 @@ button{font:inherit;color:inherit}
   .tira{animation:none}
   .carrusel{overflow-x:auto}
   .pluma{animation:none}
+  .cara,.regalo{transition:none}
 }
 </style>
 </head>
@@ -420,7 +448,13 @@ window.CARTA = {
   bAbrir.appendChild(svg(I.play)); bAbrir.appendChild(document.createTextNode('Tocá para abrir'));
   escena.appendChild(bAbrir);
   var cfgM = C.musica || {};
-  if (cfgM.archivo || cfgM.generada !== false) escena.appendChild(el('p', 'nota', 'Con música · subí el volumen'));
+  var externa = false, enl = cfgM.enlace;
+  if (enl && enl.url) {
+    var aEnl = el('a', 'cancion', enl.texto || '🎶 Poné su canción'); aEnl.href = enl.url; aEnl.target = '_blank'; aEnl.rel = 'noopener';
+    aEnl.addEventListener('click', function () { externa = true; mudo = true; musica.silenciar(true); });
+    escena.insertBefore(aEnl, bAbrir);
+    if (enl.nota) escena.insertBefore(el('p', 'cancion-nota', enl.nota), bAbrir);
+  } else if (cfgM.archivo || cfgM.generada !== false) escena.appendChild(el('p', 'nota', 'Con música · subí el volumen'));
   var bProbar = null, entrada = null;
   if (!fotos.length) {
     bProbar = el('button', 'probar', 'Probar con mis fotos'); bProbar.type = 'button';
@@ -432,7 +466,7 @@ window.CARTA = {
   /* ───────── la carta ───────── */
   var carta = el('main', 'carta'); carta.hidden = true;
   app.appendChild(carta);
-  var pasos = [], bloques = [], todasPols = [], pluma = el('span', 'pluma');
+  var pasos = [], bloques = [], todasPols = [], pluma = el('span', 'pluma'), mudo = false;
 
   function escribible(tag, cls, texto) {
     var p = el(tag, cls);
@@ -521,8 +555,92 @@ window.CARTA = {
     }, todo: function () { pols.forEach(function (p) { asentar(p); }); } });
   }
 
+  /* poema: estrofas con versos separados por \n, repartidas a lo largo de la carta */
+  var estrofas = [], ie = 0;
+  function estrofa(s) {
+    var d = el('div', 'estrofa'); carta.appendChild(d);
+    var vs = String(s).split('\n');
+    vs.forEach(function (v, i) { texto('p', 'v', v, i === vs.length - 1 ? 800 : 280, d); });
+  }
+  function poema(todas) { if (todas) { while (ie < estrofas.length) estrofa(estrofas[ie++]); } else if (ie < estrofas.length) estrofa(estrofas[ie++]); }
+
+  /* regalos: tarjetas; las que tienen pista se dan vuelta al tocarlas */
+  function diasHasta(f) {
+    var p = String(f).split('-'), d = new Date(+p[0], +p[1] - 1, +p[2]), h = new Date(); h.setHours(0, 0, 0, 0);
+    return Math.round((d - h) / 864e5);
+  }
+  function cuenta(g) {
+    var n = diasHasta(g.hasta);
+    if (isNaN(n)) return '';
+    return n > 1 ? 'Llega en ' + n + ' días' : n === 1 ? 'Llega mañana' : n === 0 ? '¡Llega hoy!' : (g.llego || '¡Ya llegó!');
+  }
+  var PERRO = {
+    pug: '<path d="M37 66Q21 72 21 98V114H79V98Q79 72 63 66Z"/>' +
+      '<ellipse cx="50" cy="47" rx="25" ry="22"/><path d="M29 33Q21 30 19 41Q21 49 31 45Z"/><path d="M71 33Q79 30 81 41Q79 49 69 45Z"/>' +
+      '<path d="M42 37Q50 33 58 37" fill="none" stroke="#5a4a50" stroke-width="1.6" stroke-linecap="round"/>' +
+      '<ellipse cx="50" cy="56" rx="10" ry="7" fill="#3a2f34"/><ellipse cx="50" cy="53" rx="3.6" ry="2.5" fill="#000"/>' +
+      '<path d="M46.5 61Q50 68 53.5 61Z" fill="#ec8fa0"/>',
+    bulldog: '<path d="M36 68Q20 74 20 98V114H80V98Q80 74 64 68Z"/>' +
+      '<path d="M31 40Q20 14 29 7Q41 9 45 33Z"/><path d="M69 40Q80 14 71 7Q59 9 55 33Z"/>' +
+      '<path d="M33 34Q26 18 31 13Q38 16 41 31Z" fill="#c98593" opacity=".55"/><path d="M67 34Q74 18 69 13Q62 16 59 31Z" fill="#c98593" opacity=".55"/>' +
+      '<path d="M26 51Q26 31 50 31Q74 31 74 51Q74 68 50 69Q26 68 26 51Z"/>' +
+      '<ellipse cx="50" cy="56" rx="3.8" ry="2.6" fill="#000"/><path d="M44 61Q50 65 56 61" fill="none" stroke="#5a4a50" stroke-width="1.6" stroke-linecap="round"/>'
+  };
+  function perras(lista) {
+    var s = '';
+    lista.forEach(function (p, i) {
+      var cuerpo = PERRO[String(p.raza || '').toLowerCase()] || PERRO.pug;
+      var ojoY = p.raza === 'bulldog' ? 47 : 44;
+      s += '<g transform="translate(' + i * 100 + ' 0)"><g fill="currentColor" style="color:' + (p.color || '#1c1518') + '">' + cuerpo + '</g>' +
+        '<circle cx="40" cy="' + ojoY + '" r="3.6" fill="#fff"/><circle cx="40.7" cy="' + (ojoY + .6) + '" r="2" fill="#1c1518"/>' +
+        '<circle cx="60" cy="' + ojoY + '" r="3.6" fill="#fff"/><circle cx="60.7" cy="' + (ojoY + .6) + '" r="2" fill="#1c1518"/>' +
+        '<path d="M33 69Q50 78 67 69" fill="none" stroke="var(--acento)" stroke-width="4" stroke-linecap="round"/>' +
+        '<text x="50" y="136" text-anchor="middle" style="font-family:var(--mano);font-size:17px;font-weight:700;fill:var(--tinta)">' +
+        String(p.nombre || '').replace(/[<&]/g, '') + '</text></g>';
+    });
+    var e = svg(s, '0 0 ' + lista.length * 100 + ' 142'); e.setAttribute('class', 'perras'); return e;
+  }
+  function regalos(R) {
+    var lista = (R && R.lista) || [];
+    if (!lista.length) return;
+    if (R.titulo) texto('p', 'regalos-tit', R.titulo, 500);
+    var d = el('div', 'bloque regalos'); carta.appendChild(d);
+    var cards = lista.map(function (g) {
+      var c = el('div', 'regalo' + (g.entregado ? ' hecho' : ''));
+      var fr = el('div', 'cara frente'), top = el('div', 'reg-top');
+      if (g.icono) top.appendChild(el('span', 'reg-ico', g.icono));
+      top.appendChild(el('h3', '', txt(g.titulo || ''))); fr.appendChild(top);
+      if (g.texto) fr.appendChild(el('p', '', txt(g.texto)));
+      var gira = !!(g.pista || (g.perras && g.perras.length) || g.hasta);
+      if (g.entregado) fr.appendChild(el('span', 'chip ok', '✓ ' + (g.estado || 'Entregado')));
+      else if (gira) fr.appendChild(el('span', 'chip', g.boton || 'Tocá para una pista'));
+      c.appendChild(fr);
+      if (gira) {
+        var at = el('div', 'cara atras');
+        if (g.pista) at.appendChild(el('p', '', txt(g.pista)));
+        if (g.perras && g.perras.length) at.appendChild(perras(g.perras));
+        if (g.hasta) at.appendChild(el('p', 'cuenta', cuenta(g)));
+        at.appendChild(el('span', 'chip', '↺ Dar vuelta'));
+        c.appendChild(at);
+        c.setAttribute('role', 'button'); c.tabIndex = 0; c.setAttribute('aria-pressed', 'false');
+        var dar = function () { var v = c.classList.toggle('vuelta'); c.setAttribute('aria-pressed', v ? 'true' : 'false'); if (v) petalos.fiesta(2); };
+        c.addEventListener('click', dar);
+        c.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); dar(); } });
+      }
+      d.appendChild(c);
+      return c;
+    });
+    bloques.push({ el: d, tipo: 'regalos' });
+    pasos.push({ hacer: function () {
+      cursor = d;
+      cards.forEach(function (c, i) { setTimeout(function () { c.classList.add('on'); }, i * 450); });
+      return { ms: cards.length * 450 + 1000, listo: true };
+    }, todo: function () { cards.forEach(function (c) { c.classList.add('on'); }); } });
+  }
+
   function construir() {
     carta.innerHTML = ''; pasos = []; bloques = []; todasPols = [];
+    estrofas = [].concat(TX.poema || []); ie = 0;
     var n = fotos.length;
     var A = [], B = [], Cc = [], resto;
     if (n <= 4) A = fotos.slice();
@@ -535,8 +653,10 @@ window.CARTA = {
     texto('p', 'saludo', T.saludo, 700);
     texto('p', '', T.intro);
     if (A.length) lluvia(A); else separadorFlor();
+    poema();
     texto('p', '', T.recuerdos);
     if (B.length) carrusel(B);
+    poema();
     texto('p', '', T.antesDestacado, 400);
     if (T.destacado) {
       var pd0 = el('p', 'destacado'); var marca = el('span', 'marca'); pd0.appendChild(marca); carta.appendChild(pd0);
@@ -546,6 +666,7 @@ window.CARTA = {
       pasos.push({ hacer: function () { marca.classList.add('on'); return { ms: 1500, listo: true }; }, todo: function () { marca.classList.add('on'); } });
     }
     if (Cc.length) lluvia(Cc);
+    poema();
     var gl = [].concat(T.gracias || []);
     if (gl.length) {
       var ul = el('ul', 'lista'); carta.appendChild(ul);
@@ -555,8 +676,11 @@ window.CARTA = {
         pasoTexto(e, 450);
       });
     }
+    poema();
+    regalos(C.regalos);
     texto('p', '', T.final, 900);
     if (resto.length >= 6) corazon(resto); else separadorFlor();
+    poema(true);
     var g = el('div', 'bloque grande');
     g.appendChild(document.createTextNode(txt(T.cierre)));
     if (T.sub) g.appendChild(el('small', '', txt(T.sub)));
@@ -629,6 +753,9 @@ window.CARTA = {
       } else if (b.tipo === 'grande') {
         b.el.style.height = '';
         redondear(b.el, b.el.scrollHeight + lh());
+      } else if (b.tipo === 'regalos') {
+        b.el.style.height = '';
+        redondear(b.el, b.el.scrollHeight + 4);
       } else if (b.tipo === 'flor') {
         redondear(b.el, 68);
       }
@@ -716,14 +843,13 @@ window.CARTA = {
     window.addEventListener('touchstart', soltar, { passive: true });
   }
   function pintarPausa() { if (pausado || !siguiendo) etiqueta(bPausa, I.play, 'Seguir'); else etiqueta(bPausa, I.pausa, 'Pausar'); }
-  var mudo = false;
   function pintarSon() { etiqueta(bSon, mudo ? I.mudo : I.son, mudo ? 'Sin sonido' : 'Sonido'); }
 
   /* ───────── abrir el sobre ───────── */
   var abriendo = false;
   function abrir() {
     if (abriendo) return; abriendo = true;
-    musica.tocar();
+    if (!externa) musica.tocar();
     construir();
     if (reduce) { mostrarCarta(); verTodo(); return; }
     sobre.classList.add('abierto');

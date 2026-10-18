@@ -79,6 +79,7 @@ Armá un `datos.json` así (lo que no sepas, dejalo como está):
 - `fotos`: dejalo vacío si vas a usar `--fotos` (abajo). Si querés un orden o pies de foto propios, listalas vos: `{"src": "ruta/a/la/foto.jpg", "texto": "La costa, 1998"}`. Poné pie de foto solo si estás seguro de lo que muestra (2 a 4 palabras).
 - `musica.archivo`: la ruta al mp3 si te pasaron uno (queda adentro del archivo); `desde` = segundo en que arranca.
 - Colores propios: en vez de un nombre, `"paleta": {"fondo": "#3a1f2b", "papel": "#fff8f2", "acento": "#c9506e"}`.
+- Extras opcionales (`textos.poema`, `regalos`, `musica.enlace`): ver la sección "Extras opcionales" del README. Usalos solo si la persona pide un poema, quiere contar regalos o pide una canción que no tiene en mp3.
 - `velocidad` (opcional): 1 = normal, 1.5 = más rápida.
 
 ## Paso 4 · Armar el archivo

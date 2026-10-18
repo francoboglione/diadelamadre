@@ -64,6 +64,22 @@ window.CARTA = {
 };
 ```
 
+### Extras opcionales
+
+- **Poema** (`textos.poema`): una lista de estrofas, con los versos separados por `\n`. Se reparten a lo largo de la carta y la última queda antes del cierre.
+- **Regalos** (`regalos`): tarjetas al final de la carta. Las entregadas llevan un tilde; las que tienen `pista`, `perras` o `hasta` se dan vuelta al tocarlas.
+
+```js
+"regalos": { "titulo": "Y como hoy es tu día, los regalos:", "lista": [
+  { "icono": "💐", "titulo": "Flores", "texto": "…", "entregado": true },
+  { "icono": "🎁", "titulo": "Regalo misterioso", "pista": "Te va a acompañar cada mañana…",
+    "perras": [{ "nombre": "Suki", "raza": "pug" }, { "nombre": "Nina", "raza": "bulldog" }] },
+  { "icono": "✈️", "titulo": "Un regalo te espera en Barcelona", "pista": "…", "hasta": "2026-10-27" }
+] }
+```
+
+- **Canción por link** (`musica.enlace`): `{ "texto": "🎶 Primero, poné Mamma Mia", "url": "https://open.spotify.com/…", "nota": "…" }`. Muestra un botón en el sobre que abre la canción en Spotify o YouTube; si lo toca, la cajita de música no suena encima.
+
 Los textos que no pongas (`saludo`, `intro`, `recuerdos`, `antesDestacado`, `destacado`, `gracias`, `final`, `cierre`, `sub`, `firma`, `pd`) se completan solos. También acepta `"velocidad": 1.5` para que se escriba más rápido, y una paleta propia con colores (`{"fondo": "#…", "papel": "#…", "acento": "#…"}`).
 
 **Con Python**, `armar.py` hace lo mismo que la IA: achica las fotos y las mete adentro.
