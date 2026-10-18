@@ -119,7 +119,7 @@ button{font:inherit;color:inherit}
 .pol .foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .pol figcaption{font-family:var(--mano);color:#3b2a30;font-size:calc(var(--w) * .085);line-height:1.1;min-height:calc(var(--w) * .2);display:flex;align-items:center;justify-content:center;text-align:center;padding:4px 6px}
 .pol.rota{display:none}
-.pol.vuela{visibility:visible;transition:transform .78s cubic-bezier(.22,.85,.3,1.14),box-shadow .78s ease}
+.pol.vuela{visibility:visible;will-change:transform;transition:transform .78s cubic-bezier(.22,.85,.3,1.14)}
 .pol.ya{visibility:visible}
 .corazon .pol{padding:calc(var(--w) * .07) calc(var(--w) * .07) calc(var(--w) * .2)}
 .corazon .pol .foto{padding-top:100%}
@@ -131,7 +131,8 @@ button{font:inherit;color:inherit}
 .fila.rev{transform:translateX(-26%)}
 .fila.on{opacity:1;transform:none}
 .fila + .fila{margin-top:16px}
-.tira{display:flex;gap:16px;width:max-content;padding:0 8px;animation:desliza var(--dur,40s) linear infinite}
+.tira{display:flex;gap:16px;width:max-content;padding:0 8px;will-change:transform;animation:desliza var(--dur,40s) linear infinite}
+.carrusel.quieto .tira{animation-play-state:paused}
 .fila.rev .tira{animation-direction:reverse}
 .tira .pol{position:relative;left:auto;top:auto;flex:0 0 auto;visibility:visible;transform:rotate(var(--r))}
 .tira .pol .foto{padding-top:100%}
@@ -366,7 +367,7 @@ window.CARTA = {
   var externa = false, enl = cfgM.enlace;
   if (enl && enl.url) {
     var aEnl = el('a', 'cancion', enl.texto || '🎶 Poné su canción'); aEnl.href = enl.url; aEnl.target = '_blank'; aEnl.rel = 'noopener';
-    aEnl.addEventListener('click', function () { externa = true; mudo = true; musica.silenciar(true); });
+    aEnl.addEventListener('click', function () { externa = true; musica.silenciar(true); });
     escena.insertBefore(aEnl, bAbrir);
     if (enl.nota) escena.insertBefore(el('p', 'cancion-nota', enl.nota), bAbrir);
   } else if (cfgM.archivo || cfgM.generada !== false) escena.appendChild(el('p', 'nota', 'Con música · subí el volumen'));
@@ -400,6 +401,7 @@ window.CARTA = {
       if (i < e.chars.length) {
         var c = e.chars[i++];
         c.classList.add('t');
+        sfx.tecla(c.textContent);
         if (c.nextSibling) c.parentNode.insertBefore(pluma, c.nextSibling); else c.parentNode.appendChild(pluma);
         cursor = pluma;
         var ch = c.textContent;
@@ -428,7 +430,7 @@ window.CARTA = {
     var k = 0;
     pasos.push({ hacer: function () {
       cursor = d;
-      if (k < pols.length) { lanzar(pols[k++], b); return { ms: 430 }; }
+      if (k < pols.length) { lanzar(pols[k++], b); sfx.foto(); return { ms: 430 }; }
       return { ms: 1100, listo: true };
     }, todo: function () { pols.forEach(function (p) { asentar(p); }); } });
   }
@@ -451,9 +453,14 @@ window.CARTA = {
       return fila;
     });
     bloques.push({ el: d, tipo: 'carrusel' });
+    if (window.IntersectionObserver) {
+      d.classList.add('quieto');
+      new IntersectionObserver(function (es) { es.forEach(function (x) { d.classList.toggle('quieto', !x.isIntersecting); }); }).observe(d);
+    }
     pasos.push({ hacer: function () {
       cursor = d;
       filas.forEach(function (f, i) { setTimeout(function () { f.classList.add('on'); }, i * 350); });
+      sfx.brillo();
       return { ms: 3200, listo: true };
     }, todo: function () { filas.forEach(function (f) { f.classList.add('on'); }); } });
   }
@@ -465,7 +472,7 @@ window.CARTA = {
     var k = 0;
     pasos.push({ hacer: function () {
       cursor = d;
-      if (k < pols.length) { lanzar(pols[k++], b); return { ms: 150 }; }
+      if (k < pols.length) { lanzar(pols[k++], b); sfx.foto(true); return { ms: 150 }; }
       return { ms: 1400, listo: true };
     }, todo: function () { pols.forEach(function (p) { asentar(p); }); } });
   }
@@ -538,7 +545,7 @@ window.CARTA = {
         at.appendChild(el('span', 'chip', '↺ Dar vuelta'));
         c.appendChild(at);
         c.setAttribute('role', 'button'); c.tabIndex = 0; c.setAttribute('aria-pressed', 'false');
-        var dar = function () { var v = c.classList.toggle('vuelta'); c.setAttribute('aria-pressed', v ? 'true' : 'false'); if (v) petalos.fiesta(2); };
+        var dar = function () { var v = c.classList.toggle('vuelta'); c.setAttribute('aria-pressed', v ? 'true' : 'false'); sfx.vuelta(v); if (v) petalos.fiesta(2); };
         c.addEventListener('click', dar);
         c.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); dar(); } });
       }
@@ -548,7 +555,7 @@ window.CARTA = {
     bloques.push({ el: d, tipo: 'regalos' });
     pasos.push({ hacer: function () {
       cursor = d;
-      cards.forEach(function (c, i) { setTimeout(function () { c.classList.add('on'); }, i * 450); });
+      cards.forEach(function (c, i) { setTimeout(function () { c.classList.add('on'); sfx.pop(i); }, i * 450); });
       return { ms: cards.length * 450 + 1000, listo: true };
     }, todo: function () { cards.forEach(function (c) { c.classList.add('on'); }); } });
   }
@@ -578,16 +585,16 @@ window.CARTA = {
       var ed = escribible('span', '', T.destacado);
       while (ed.el.firstChild) marca.appendChild(ed.el.firstChild);
       pasoTexto({ el: pd0, chars: ed.chars }, 200);
-      pasos.push({ hacer: function () { marca.classList.add('on'); return { ms: 1500, listo: true }; }, todo: function () { marca.classList.add('on'); } });
+      pasos.push({ hacer: function () { marca.classList.add('on'); sfx.marcador(); return { ms: 1500, listo: true }; }, todo: function () { marca.classList.add('on'); } });
     }
     if (Cc.length) lluvia(Cc);
     poema();
     var gl = [].concat(T.gracias || []);
     if (gl.length) {
       var ul = el('ul', 'lista'); carta.appendChild(ul);
-      gl.forEach(function (g) {
+      gl.forEach(function (g, gi) {
         var e = escribible('li', '', g); ul.appendChild(e.el);
-        pasos.push({ hacer: function () { e.el.classList.add('on'); return { ms: 200, listo: true }; }, todo: function () { e.el.classList.add('on'); } });
+        pasos.push({ hacer: function () { e.el.classList.add('on'); sfx.nota(gi); return { ms: 200, listo: true }; }, todo: function () { e.el.classList.add('on'); } });
         pasoTexto(e, 450);
       });
     }
@@ -601,7 +608,7 @@ window.CARTA = {
     if (T.sub) g.appendChild(el('small', '', txt(T.sub)));
     carta.appendChild(g);
     bloques.push({ el: g, tipo: 'grande' });
-    pasos.push({ hacer: function () { cursor = g; g.classList.add('on'); petalos.fiesta(9); return { ms: 2200, listo: true }; }, todo: function () { g.classList.add('on'); } });
+    pasos.push({ hacer: function () { cursor = g; g.classList.add('on'); petalos.fiesta(9); sfx.campanas(); return { ms: 2200, listo: true }; }, todo: function () { g.classList.add('on'); } });
     var fp = el('p', 'firma'); carta.appendChild(fp);
     var f1 = escribible('span', '', T.firma); fp.appendChild(f1.el); pasoTexto(f1, 250);
     if (de) { var f2 = escribible('span', '', de); fp.appendChild(f2.el); pasoTexto(f2, 600); }
@@ -699,10 +706,11 @@ window.CARTA = {
     p.el.style.setProperty('--alto', '0');
     transformar(p, p.x, p.y, p.r, 1);
     p.puesto = true;
+    setTimeout(function () { p.el.classList.remove('vuela'); p.el.classList.add('ya'); }, 900);
   }
 
   /* ───────── el que escribe y la página que baja sola ───────── */
-  var ip = 0, espera = 0, ult = 0, pausado = false, siguiendo = true, terminado = false, corriendo = false, cursor = null;
+  var ip = 0, espera = 0, ult = 0, pausado = false, siguiendo = true, terminado = false, corriendo = false, cursor = null, tocado = 0, tocando = false, revisado = 0;
   function cuadro(ts) {
     if (!corriendo) return;
     var dt = ult ? Math.min(64, ts - ult) : 16; ult = ts;
@@ -717,10 +725,16 @@ window.CARTA = {
         if (r.listo) ip++;
       }
     }
-    if (siguiendo && !pausado && cursor) {
+    if (siguiendo && !pausado && cursor && !tocando) {
       var rc = cursor.getBoundingClientRect(), y = window.pageYOffset;
-      var obj = y + (cursor === pluma ? rc.top - vh * 0.58 : rc.bottom - vh * 0.88);
-      if (obj > y + 1) window.scrollTo(0, y + (obj - y) * Math.min(1, dt / 1000 * 2.8));
+      var obj = y + (cursor === pluma ? rc.top - vh * 0.58 : rc.bottom - vh * 0.88), dif = obj - y;
+      if (dif > 1) window.scrollTo(0, Math.round(y + Math.max(1, dif * Math.min(1, dt / 1000 * 2.8))));
+    } else if (!siguiendo && !pausado && !terminado && cursor && !tocando && ts - revisado > 300) {
+      revisado = ts;
+      if (Date.now() - tocado > 2200) {
+        var rv = cursor.getBoundingClientRect();
+        if (rv.top > -20 && rv.top < vh * 0.92) { siguiendo = true; pintarPausa(); }
+      }
     }
     requestAnimationFrame(cuadro);
   }
@@ -744,7 +758,7 @@ window.CARTA = {
     bTodo = el('button'); bTodo.type = 'button'; etiqueta(bTodo, I.todo, 'Ver todo');
     bSon = el('button'); bSon.type = 'button';
     ctrl.appendChild(bPausa); ctrl.appendChild(bTodo);
-    if (musica.hay) ctrl.appendChild(bSon);
+    if (musica.hay || sfx.hay) ctrl.appendChild(bSon);
     document.body.appendChild(ctrl);
     pintarPausa(); pintarSon();
     bPausa.addEventListener('click', function () {
@@ -752,10 +766,15 @@ window.CARTA = {
       pintarPausa();
     });
     bTodo.addEventListener('click', verTodo);
-    bSon.addEventListener('click', function () { mudo = !mudo; musica.silenciar(mudo); if (!mudo) musica.tocar(); pintarSon(); });
-    var soltar = function () { if (!terminado && siguiendo) { siguiendo = false; pintarPausa(); } };
+    bSon.addEventListener('click', function () { mudo = !mudo; musica.silenciar(mudo); sfx.silenciar(mudo); if (!mudo && !externa) musica.tocar(); pintarSon(); });
+    var enControles = function (e) { var t = e && e.target; return !!(t && t.nodeType === 1 && ctrl.contains(t)); };
+    var soltar = function () { tocado = Date.now(); if (!terminado && siguiendo) { siguiendo = false; pintarPausa(); } };
+    window.addEventListener('touchmove', function (e) { if (!enControles(e)) soltar(); }, { passive: true });
+    window.addEventListener('touchend', function () { tocando = false; tocado = Date.now(); }, { passive: true });
+    window.addEventListener('touchcancel', function () { tocando = false; }, { passive: true });
+    window.addEventListener('keydown', function (e) { if (/^(ArrowUp|ArrowDown|PageUp|PageDown|Home|End| )$/.test(e.key) && e.target === document.body) soltar(); });
     window.addEventListener('wheel', soltar, { passive: true });
-    window.addEventListener('touchstart', soltar, { passive: true });
+    window.addEventListener('touchstart', function (e) { if (enControles(e)) return; tocando = true; soltar(); }, { passive: true });
   }
   function pintarPausa() { if (pausado || !siguiendo) etiqueta(bPausa, I.play, 'Seguir'); else etiqueta(bPausa, I.pausa, 'Pausar'); }
   function pintarSon() { etiqueta(bSon, mudo ? I.mudo : I.son, mudo ? 'Sin sonido' : 'Sonido'); }
@@ -764,6 +783,7 @@ window.CARTA = {
   var abriendo = false;
   function abrir() {
     if (abriendo) return; abriendo = true;
+    sfx.abrir();
     if (!externa) musica.tocar();
     construir();
     if (reduce) { mostrarCarta(); verTodo(); return; }
@@ -806,7 +826,17 @@ window.CARTA = {
       bProbar.textContent = '✓ ' + fs.length + (fs.length === 1 ? ' foto cargada' : ' fotos cargadas') + ' (solo en este dispositivo)';
     });
   }
-  var tRes; window.addEventListener('resize', function () { clearTimeout(tRes); tRes = setTimeout(function () { medir(); petalos.medir(); }, 150); });
+  var tRes, anchoAnt = window.innerWidth;
+  window.addEventListener('resize', function () {
+    clearTimeout(tRes);
+    tRes = setTimeout(function () {
+      vh = window.innerHeight;
+      if (window.innerWidth !== anchoAnt) { anchoAnt = window.innerWidth; medir(); }
+      petalos.medir();
+    }, 150);
+  });
+  /* fotos decodificadas antes de que vuelen */
+  fotos.forEach(function (f) { try { var im = new Image(); im.src = f.src; if (im.decode) im.decode()['catch'](function () {}); } catch (e) {} });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(medir);
 
   /* ───────── pétalos ───────── */
@@ -827,10 +857,13 @@ window.CARTA = {
     };
     api.modo = function (m) { cuantos = m === 'carta' ? 0 : 1; };
     api.fiesta = function (seg) { hasta = Date.now() + seg * 1000; ps.forEach(function (p, i) { if (i % 2) { p.y = -20 - Math.random() * H * 0.5; } }); };
+    var limpio = false;
     function cuadroP(ts) {
       var dt = ultP ? Math.min(0.05, (ts - ultP) / 1000) : 0.016; ultP = ts;
-      ctx.clearRect(0, 0, W, H);
       var fiesta = Date.now() < hasta, act = Math.round(ps.length * (fiesta ? 1 : cuantos * 0.6));
+      if (!act) { if (!limpio) { ctx.clearRect(0, 0, W, H); limpio = true; } requestAnimationFrame(cuadroP); return; }
+      limpio = false;
+      ctx.clearRect(0, 0, W, H);
       for (var i = 0; i < ps.length; i++) {
         var p = ps[i];
         p.f += dt * 1.4; p.a += p.va * dt; p.y += p.vy * (fiesta ? 1.5 : 1) * dt; p.x += (p.vx + Math.sin(p.f) * 18) * dt;
@@ -846,6 +879,118 @@ window.CARTA = {
     api.medir();
     requestAnimationFrame(cuadroP);
     return api;
+  })();
+
+  /* ───────── efectos de sonido: sintetizados, suaves, sin archivos ───────── */
+  var sfx = (function () {
+    var AC = window.AudioContext || window.webkitAudioContext;
+    var ac = null, out = null, ruido = null, mute = false, ultT = 0, ultF = 0;
+    var hay = !!AC && C.sonidos !== false && !reduce;
+    function ctx() {
+      if (!AC) return null;
+      if (!ac) {
+        try {
+          try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e0) {}
+          ac = new AC();
+          out = ac.createGain(); out.gain.value = 0.9; out.connect(ac.destination);
+          var n = ac.sampleRate, b = ac.createBuffer(1, n, n), d = b.getChannelData(0);
+          for (var i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+          ruido = b;
+          document.addEventListener('visibilitychange', function () {
+            try { if (document.hidden) ac.suspend(); else ac.resume(); } catch (e1) {}
+          });
+        } catch (e) { ac = null; }
+      }
+      if (ac && ac.state === 'suspended' && ac.resume && !document.hidden) { try { ac.resume(); } catch (e2) {} }
+      return ac;
+    }
+    function ok() { return hay && !mute && ac && ruido; }
+    function soplo(t, dur, tipo, f, q, v, f2) {
+      var s = ac.createBufferSource(), fl = ac.createBiquadFilter(), g = ac.createGain();
+      s.buffer = ruido; fl.type = tipo; fl.Q.value = q;
+      fl.frequency.setValueAtTime(f, t); if (f2) fl.frequency.exponentialRampToValueAtTime(f2, t + dur);
+      g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + Math.min(0.012, dur * 0.3)); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      s.connect(fl); fl.connect(g); g.connect(out);
+      s.start(t, Math.random() * 0.6); s.stop(t + dur + 0.03);
+    }
+    function tono(t, f, dur, v, tipo, f2) {
+      var o = ac.createOscillator(), g = ac.createGain();
+      o.type = tipo || 'sine'; o.frequency.setValueAtTime(f, t); if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + dur * 0.5);
+      g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + 0.006); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(out); o.start(t); o.stop(t + dur + 0.03);
+    }
+    function hz(m) { return 440 * Math.pow(2, (m - 69) / 12); }
+    function campana(t, m, v, dur) { tono(t, hz(m), dur, v); tono(t, hz(m + 12) * 1.003, dur * 0.45, v * 0.22); }
+    return {
+      hay: hay, ctx: ctx,
+      silenciar: function (m) { mute = m; },
+      /* lacre que se rompe y papel que sale del sobre */
+      abrir: function () {
+        if (!ctx() || !ok()) return;
+        var t = ac.currentTime + 0.02;
+        soplo(t, 0.05, 'highpass', 2600, 0.8, 0.10);
+        tono(t, 170, 0.14, 0.09, 'sine', 70);
+        soplo(t + 0.35, 0.55, 'bandpass', 900, 0.9, 0.05, 2600);
+        soplo(t + 0.95, 0.75, 'bandpass', 1400, 0.8, 0.045, 600);
+      },
+      /* tecla: un clic de máquina de escribir muy bajito */
+      tecla: function (ch) {
+        if (!ok() || ch === ' ') return;
+        var t = ac.currentTime;
+        if (t - ultT < 0.055) return;
+        ultT = t;
+        var fin = ch === '.' || ch === '!' || ch === '?';
+        soplo(t, fin ? 0.05 : 0.03, 'bandpass', 2400 + Math.random() * 1800, 1.4, fin ? 0.09 : 0.055);
+        tono(t, 95 + Math.random() * 35, 0.035, fin ? 0.05 : 0.025, 'sine');
+      },
+      /* foto: un soplido que cae y un toque suave al apoyarse */
+      foto: function (chica) {
+        if (!ok()) return;
+        var t = ac.currentTime;
+        if (t - ultF < (chica ? 0.28 : 0.2)) return;
+        ultF = t;
+        var v = chica ? 0.035 : 0.06;
+        soplo(t, 0.5, 'bandpass', 2200, 0.7, v, 380);
+        soplo(t + 0.62, 0.07, 'lowpass', 900, 0.7, v * 1.3);
+        tono(t + 0.62, 150, 0.09, v * 0.7, 'sine', 110);
+      },
+      /* carrusel: un brillito que sube */
+      brillo: function () {
+        if (!ok()) return;
+        var t = ac.currentTime;
+        [77, 81, 84, 89].forEach(function (m, i) { campana(t + i * 0.09, m, 0.028, 1.3); });
+      },
+      /* marcador: un trazo de fibra sobre el papel */
+      marcador: function () {
+        if (!ok()) return;
+        var t = ac.currentTime;
+        soplo(t, 1.25, 'bandpass', 1300, 3, 0.05, 2000);
+      },
+      /* cada "Por…" de la lista: una notita de la escala */
+      nota: function (i) {
+        if (!ok()) return;
+        campana(ac.currentTime, [72, 74, 76, 77, 79, 81][i % 6], 0.035, 0.7);
+      },
+      pop: function (i) {
+        if (!ok()) return;
+        var t = ac.currentTime;
+        tono(t, 520 + (i || 0) * 60, 0.12, 0.045, 'sine', 300);
+      },
+      /* tarjeta que se da vuelta */
+      vuelta: function (alFrente) {
+        if (!ctx() || !ok()) return;
+        var t = ac.currentTime;
+        soplo(t, 0.11, 'highpass', 1800, 0.7, 0.07);
+        soplo(t + 0.09, 0.09, 'highpass', 2600, 0.7, 0.05);
+        if (alFrente) { campana(t + 0.18, 89, 0.03, 1.1); campana(t + 0.28, 93, 0.025, 1.1); }
+      },
+      /* "Te amo, mami": campanitas en Fa mayor, el tono de la cajita */
+      campanas: function () {
+        if (!ok()) return;
+        var t = ac.currentTime;
+        [65, 69, 72, 77, 81].forEach(function (m, i) { campana(t + i * 0.13, m, 0.04, 2.6); });
+      }
+    };
   })();
 
   /* ───────── música: mp3 propio o cajita de música generada ───────── */
@@ -873,6 +1018,7 @@ window.CARTA = {
     }
     function campana(m, t, v) { nota(m, t, 1.6, 'sine', v, 0.006); nota(m + 12, t, 0.7, 'sine', v * 0.25, 0.004); }
     function programar() {
+      if (prox < ac.currentTime) prox = ac.currentTime + 0.05;
       while (prox < ac.currentTime + 0.4) {
         var cmp = Math.floor(paso / 8) % 4, k = paso % 8, a0 = ACORDES[cmp];
         var tonos = [a0[0] + 12, a0[1] + 12, a0[2] + 12, a0[0] + 24];
@@ -886,7 +1032,7 @@ window.CARTA = {
       tocar: function () {
         try {
           if (!ac) {
-            ac = new AC();
+            ac = sfx.ctx();
             master = ac.createGain(); master.gain.value = 0.0001; master.connect(ac.destination);
             var len = ac.sampleRate * 2.6, buf = ac.createBuffer(2, len, ac.sampleRate);
             for (var ch = 0; ch < 2; ch++) { var d = buf.getChannelData(ch); for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.6); }

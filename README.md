@@ -93,6 +93,14 @@ El ejemplo de este repo se genera con `python3 armar.py ejemplo.json --sin-embeb
 
 **Con GitHub Pages:** hacé un fork, cambiá el bloque de `carta.html`, subí tus fotos a `fotos/` y activá *Settings → Pages → main / root*.
 
+## Sonidos
+
+Además de la música, la carta tiene efectos sintetizados y bajitos (sin archivos): el lacre al abrir, un tecleo suave mientras escribe, un soplido cuando cae cada foto, el marcador, las notitas de la lista, las tarjetas que se dan vuelta y unas campanitas al final. El botón **Sonido** apaga todo junto. Con `"sonidos": false` se desactivan, y con "Reducir movimiento" no suenan.
+
+## Pruebas
+
+`python3 pruebas/qa.py carta-armada.html` (necesita Playwright) recorre la carta en 360, 390, 430 y 1280 px: sin scroll horizontal ni errores, recorrido completo con la pluma siempre a la vista, tocar la pantalla frena el seguimiento y lo retoma, Pausar y Sonido, tarjetas de regalos, cuenta regresiva y "Reducir movimiento".
+
 ## Cómo funciona
 
 1. Un sobre con lacre de corazón y "Para mamá" escrito a mano. Al tocarlo arranca la música, se abre la solapa y sale la carta.
