@@ -101,9 +101,17 @@ El ejemplo de este repo se genera con `python3 armar.py ejemplo.json --sin-embeb
 
 Además de la música, la carta tiene efectos sintetizados y bajitos (sin archivos): el lacre al abrir, un tecleo suave mientras escribe, un soplido cuando cae cada foto, el marcador, las notitas de la lista, las tarjetas que se dan vuelta y unas campanitas al final. El botón **Sonido** apaga todo junto. En iPhone suena aunque el celular esté en silencio, y si iOS corta el audio al volver de otra app, se reanuda con el siguiente toque. Con `"sonidos": false` se desactivan, y con "Reducir movimiento" no suenan.
 
+## Si la persona se mueve mientras se escribe
+
+- **Sube a releer:** la escritura espera y aparece **↓ Seguir leyendo**. Si baja sola hasta donde iba, retoma sin tocar nada.
+- **Se adelanta hacia abajo:** espera y aparece **↑ Volver a donde iba**.
+- **Un toque suelto** (sin mover la página): sigue sola al ratito.
+- **Pausar / Seguir:** Seguir siempre la lleva de vuelta a donde va la pluma, esté arriba o abajo.
+- En Android, bajar el dedo desde arriba de todo no recarga la página.
+
 ## Pruebas
 
-`python3 pruebas/qa.py carta-armada.html` (necesita Playwright) recorre la carta en 360, 390, 430 y 1280 px: sin scroll horizontal ni errores, recorrido completo con la pluma siempre a la vista, tocar la pantalla frena el seguimiento y lo retoma, Pausar y Sonido, tarjetas de regalos, cuenta regresiva y "Reducir movimiento".
+`python3 pruebas/qa.py carta-armada.html`, `pruebas/qa_lectura.py` (gestos reales: subir, bajar, tocar, pausar, 25 gestos al azar) y `pruebas/qa_celular_viejo.py` (necesitan Playwright) recorre la carta en 360, 390, 430 y 1280 px: sin scroll horizontal ni errores, recorrido completo con la pluma siempre a la vista, tocar la pantalla frena el seguimiento y lo retoma, Pausar y Sonido, tarjetas de regalos, cuenta regresiva y "Reducir movimiento".
 
 ## Cómo funciona
 

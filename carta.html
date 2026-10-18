@@ -221,6 +221,13 @@ button{font:inherit;color:inherit}
 .hacer b{color:var(--tinta)}
 .hacer a{color:var(--acento)}
 
+/* volver a donde se está escribiendo */
+.volver{position:fixed;z-index:9;left:50%;transform:translateX(-50%);bottom:calc(76px + env(safe-area-inset-bottom, 0px));border:0;border-radius:999px;
+  padding:12px 20px;background:var(--acento);color:#fff;font:600 15px/1 var(--ui);box-shadow:0 10px 26px -8px rgba(0,0,0,.55);cursor:pointer;white-space:nowrap;
+  animation:asoma .35s ease}
+.letra-grande .volver{font-size:17px;padding:14px 22px;bottom:calc(84px + env(safe-area-inset-bottom, 0px))}
+@keyframes asoma{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+html,body{overscroll-behavior-y:contain}
 /* controles */
 .controles{position:fixed;z-index:9;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom, 0px));display:flex;padding:6px;border-radius:999px;
   background:rgba(20,14,18,.72);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 10px 30px -10px rgba(0,0,0,.5)}
@@ -852,10 +859,26 @@ window.CARTA = {
 
   /* ───────── el que escribe y la página que baja sola ───────── */
   var ip = 0, espera = 0, ult = 0, pausado = false, siguiendo = true, terminado = false, corriendo = false, cursor = null, tocado = 0, tocando = false, revisado = 0;
+  var esperando = false, volviendo = false, yPropio = 0, ySoltar = 0, bVolver = null;
+  /* retomar: escribe de nuevo y la página vuelve a donde va la pluma (para arriba o para abajo) */
+  /* para las pruebas automáticas: dónde está mirando la carta */
+  window.__carta = { cursor: function () { return cursor; } };
+  function seguir(llevar) {
+    pausado = false; esperando = false; siguiendo = true; tocando = false;
+    volviendo = !!llevar; yPropio = window.pageYOffset;
+    mostrarVolver(null);
+    if (bPausa) pintarPausa();
+  }
+  function mostrarVolver(dir) {
+    if (!bVolver) return;
+    if (!dir || terminado) { bVolver.hidden = true; return; }
+    bVolver.hidden = false;
+    bVolver.textContent = dir === 'abajo' ? '↓  Seguir leyendo' : '↑  Volver a donde iba';
+  }
   function cuadro(ts) {
     if (!corriendo) return;
     var dt = ult ? Math.min(64, ts - ult) : 16; ult = ts;
-    if (!pausado && !terminado) {
+    if (!pausado && !esperando && !terminado) {
       espera -= dt;
       var guarda = 0;
       while (espera <= 0 && !terminado && guarda++ < 40) {
@@ -866,20 +889,32 @@ window.CARTA = {
         if (r.listo) ip++;
       }
     }
-    if (siguiendo && !pausado && cursor && !tocando) {
+    if (siguiendo && !pausado && cursor && !tocando && !terminado) {
+      /* la página acompaña lo que se escribe; al volver de releer también sube */
       var rc = cursor.getBoundingClientRect(), y = window.pageYOffset;
       var obj = y + (cursor === pluma ? rc.top - vh * 0.58 : rc.bottom - vh * 0.88), dif = obj - y;
-      if (dif > 1) window.scrollTo(0, Math.round(y + Math.max(1, dif * Math.min(1, dt / 1000 * 2.8))));
-    } else if (!siguiendo && !pausado && !terminado && cursor && !tocando && ts - revisado > 300) {
-      revisado = ts;
-      if (Date.now() - tocado > 2200) {
-        var rv = cursor.getBoundingClientRect();
-        if (rv.top > -20 && rv.top < vh * 0.92) { siguiendo = true; pintarPausa(); }
+      if (volviendo && Math.abs(dif) < 6) volviendo = false;
+      var paso = dif * Math.min(1, dt / 1000 * (volviendo ? 6 : 2.8));
+      if (dif > 1 || (volviendo && dif < -1)) {
+        var ny = Math.max(0, Math.round(y + (dif > 0 ? Math.max(1, paso) : Math.min(-1, paso))));
+        window.scrollTo(0, ny); yPropio = window.pageYOffset;
       }
+    } else if (!siguiendo && !pausado && !terminado && cursor && !tocando && ts - revisado > 250) {
+      /* si se fue a releer: se frena la escritura mientras no ve la pluma, y retoma sola cuando vuelve */
+      revisado = ts;
+      var rv = cursor.getBoundingClientRect();
+      var arriba = rv.bottom <= 0, abajo = rv.top >= vh * 0.94;
+      var subio = window.pageYOffset < ySoltar - 120;          /* se fue para arriba a releer */
+      var quieta = Date.now() - tocado > 1800;
+      if (arriba) { esperando = true; mostrarVolver('arriba'); }                 /* se adelantó: espera abajo */
+      else if (abajo && subio) { esperando = true; mostrarVolver('abajo'); }     /* está releyendo: espera */
+      else if (quieta) { seguir(false); }                                        /* volvió, o solo tocó: sigue */
+      else mostrarVolver(null);
     }
     requestAnimationFrame(cuadro);
   }
   function verTodo() {
+    esperando = false; volviendo = false;
     for (; ip < pasos.length; ip++) pasos[ip].todo();
     terminar();
   }
@@ -890,6 +925,7 @@ window.CARTA = {
     if (pluma.parentNode) pluma.parentNode.removeChild(pluma);
     var fin = carta.querySelector('.fin'); if (fin) fin.hidden = false;
     if (ctrl) ctrl.hidden = true;
+    esperando = false; mostrarVolver(null);
     setTimeout(function () { musica.apagar(); }, 25000);
   }
   function etiqueta(b, icono, t) { b.innerHTML = ''; b.appendChild(svg(icono)); b.appendChild(document.createTextNode(t)); }
@@ -903,21 +939,29 @@ window.CARTA = {
     document.body.appendChild(ctrl);
     pintarPausa(); pintarSon();
     bPausa.addEventListener('click', function () {
-      if (pausado || !siguiendo) { pausado = false; siguiendo = true; } else pausado = true;
-      pintarPausa();
+      if (pausado || !siguiendo || esperando) seguir(true); else { pausado = true; pintarPausa(); }
     });
+    bVolver = el('button', 'volver'); bVolver.type = 'button'; bVolver.hidden = true;
+    bVolver.addEventListener('click', function () { seguir(true); });
+    document.body.appendChild(bVolver);
     bTodo.addEventListener('click', verTodo);
     bSon.addEventListener('click', function () { sfx.desbloquear(); mudo = !mudo; musica.silenciar(mudo); sfx.silenciar(mudo); if (!mudo && !externa) musica.tocar(); pintarSon(); });
-    var enControles = function (e) { var t = e && e.target; return !!(t && t.nodeType === 1 && ctrl.contains(t)); };
-    var soltar = function () { tocado = Date.now(); if (!terminado && siguiendo) { siguiendo = false; pintarPausa(); } };
+    var enControles = function (e) { var t = e && e.target; return !!(t && t.nodeType === 1 && (ctrl.contains(t) || (bVolver && bVolver.contains(t)))); };
+    var soltar = function () { tocado = Date.now(); if (!terminado && siguiendo) { ySoltar = window.pageYOffset; siguiendo = false; pintarPausa(); } };
     window.addEventListener('touchmove', function (e) { if (!enControles(e)) soltar(); }, { passive: true });
     window.addEventListener('touchend', function () { tocando = false; tocado = Date.now(); }, { passive: true });
     window.addEventListener('touchcancel', function () { tocando = false; }, { passive: true });
     window.addEventListener('keydown', function (e) { if (/^(ArrowUp|ArrowDown|PageUp|PageDown|Home|End| )$/.test(e.key) && e.target === document.body) soltar(); });
     window.addEventListener('wheel', soltar, { passive: true });
+    /* cualquier otro scroll que no hicimos nosotros (barra, lector de pantalla, teclado) también cuenta */
+    window.addEventListener('scroll', function () {
+      if (terminado || !siguiendo || tocando) return;
+      if (Math.abs(window.pageYOffset - yPropio) > 80) soltar();
+    }, { passive: true });
+    document.addEventListener('mousedown', function (e) { if (!enControles(e) && e.clientX >= document.documentElement.clientWidth) soltar(); });
     window.addEventListener('touchstart', function (e) { if (enControles(e)) return; tocando = true; soltar(); }, { passive: true });
   }
-  function pintarPausa() { if (pausado || !siguiendo) etiqueta(bPausa, I.play, 'Seguir'); else etiqueta(bPausa, I.pausa, 'Pausar'); }
+  function pintarPausa() { if (pausado || !siguiendo || esperando) etiqueta(bPausa, I.play, 'Seguir'); else etiqueta(bPausa, I.pausa, 'Pausar'); }
   function pintarSon() { etiqueta(bSon, mudo ? I.mudo : I.son, mudo ? 'Sin sonido' : 'Sonido'); }
 
   /* ───────── abrir el sobre ───────── */
@@ -954,7 +998,7 @@ window.CARTA = {
   }
   function empezar() {
     armarControles();
-    corriendo = true; ult = 0; espera = 500;
+    corriendo = true; ult = 0; espera = 500; yPropio = window.pageYOffset;
     requestAnimationFrame(cuadro);
   }
   bAbrir.addEventListener('click', abrir);

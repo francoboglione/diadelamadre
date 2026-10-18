@@ -92,7 +92,7 @@ async def main():
         st2=await pg.evaluate("window.__ac.state"); ok('se reanuda con el siguiente toque (vuelta de otra app)', st2=='running', st2)
         await pg.evaluate("window.__tag.pause()"); await pg.tap('.carta'); await pg.wait_for_timeout(300)
         ok('el audio mudo vuelve a arrancar si iOS lo frena', await pg.evaluate("!window.__tag.paused"))
-        n0=await pg.evaluate('window.__sfx'); await pg.wait_for_timeout(1500); n1=await pg.evaluate('window.__sfx')
+        n0=await pg.evaluate('window.__sfx'); await pg.wait_for_timeout(4000); n1=await pg.evaluate('window.__sfx')
         ok('siguen sonando los efectos después', n1>n0, f'{n0}->{n1}')
         ok('sin errores de audio', not errs, errs[:3]); await ctx.close()
         # 4) gift cards
