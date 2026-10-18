@@ -39,6 +39,8 @@ button{font:inherit;color:inherit}
 .escena{position:fixed;top:0;right:0;bottom:0;left:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
   padding:calc(24px + env(safe-area-inset-top, 0px)) var(--gr) calc(24px + env(safe-area-inset-bottom, 0px)) var(--gl);transition:opacity .5s ease}
 .escena > * + *{margin-top:26px}
+.aviso-ia{margin:0;font-size:12.5px;font-weight:600;letter-spacing:.04em;color:var(--papel);background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:7px 14px;max-width:320px;line-height:1.35}
+.carta .aviso-carta{font-family:var(--ui);font-size:12.5px;line-height:1.4;color:var(--suave);text-align:center;margin:0 0 var(--lh);padding:6px 10px;border:1px dashed var(--acento2);border-radius:10px}
 .escena .ojo{margin:0;font-size:12px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:var(--acento2)}
 .sobre{position:relative;width:min(86vw,420px);perspective:1200px;animation:llega 1.1s cubic-bezier(.2,.8,.2,1) both}
 .sobre::before{content:"";display:block;padding-top:70%}
@@ -51,7 +53,7 @@ button{font:inherit;color:inherit}
   background:linear-gradient(165deg,rgba(255,255,255,.28),transparent 45%),var(--sobre);
   -webkit-clip-path:polygon(0 0,50% 50%,100% 0,100% 100%,0 100%);clip-path:polygon(0 0,50% 50%,100% 0,100% 100%,0 100%)}
 .para-sobre{font-family:var(--mano);font-weight:700;font-size:clamp(22px,6.4vw,34px);line-height:1.1;color:var(--tinta)}
-.de-sobre{margin-top:4px;font-family:var(--mano);font-size:clamp(14px,3.9vw,18px);color:var(--suave)}
+.de-sobre{padding:0 8%;line-height:1.2;text-align:center;margin-top:4px;font-family:var(--mano);font-size:clamp(14px,3.9vw,18px);color:var(--suave)}
 .solapa{position:absolute;left:0;right:0;top:0;height:52%;z-index:3;transform-origin:50% 0;filter:drop-shadow(0 3px 3px rgba(0,0,0,.18));
   transition:transform .8s cubic-bezier(.4,.1,.2,1),z-index 0s .36s}
 .solapa i{position:absolute;top:0;right:0;bottom:0;left:0;border-radius:6px 6px 0 0;background:linear-gradient(180deg,var(--sobre),var(--sobre));filter:brightness(.96);
@@ -506,6 +508,7 @@ window.CARTA = {
 
   /* ───────── el sobre ───────── */
   var escena = el('section', 'escena');
+  if (C.aviso) escena.appendChild(el('p', 'aviso-ia', C.aviso));
   escena.appendChild(el('p', 'ojo', 'Tenés una carta'));
   var sobre = el('div', 'sobre');
   sobre.appendChild(el('div', 'sobre-atras'));
@@ -808,6 +811,7 @@ window.CARTA = {
     if (B.length && B.length < 3) { A = A.concat(B); B = []; }
     resto = fotos.slice(0, 24);
 
+    if (C.aviso) carta.appendChild(el('p', 'aviso-carta', C.aviso));
     if (C.fecha) texto('p', 'fecha', C.fecha, 300);
     texto('p', 'saludo', T.saludo, 700);
     texto('p', '', T.intro);

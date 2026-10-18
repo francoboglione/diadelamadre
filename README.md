@@ -82,6 +82,7 @@ window.CARTA = {
 - **Locuras** (`locuras`): las mismas tarjetas que los regalos, para anécdotas. Las tarjetas aceptan `foto` (adelante), `fotoAtras` (al darla vuelta) y `chip` (una etiqueta).
 - **Letra grande** (`"lectura": "grande"`): texto y botones más grandes, pensado para abuelas. Con `"velocidad": 0.85` se escribe más despacio.
 - **Celulares con poca memoria**: la carta lo detecta sola y usa menos pétalos y sombras más simples.
+- **Aviso de ejemplo** (`aviso`): un texto visible en el sobre y arriba de la carta, para muestras con datos o fotos creados con IA.
 - **Firma al pie** (`credito`): `{ "texto": "Hecho con ♥ por ", "marca": "Tu estudio", "url": "https://…", "invitacion": "¿Querés hacer la tuya? Contactanos", "contacto": "https://…" }`. Aparece abajo de todo al terminar.
 - **Canción por link** (`musica.enlace`): `{ "texto": "🎶 Primero, poné Mamma Mia", "url": "https://open.spotify.com/…", "nota": "…" }`. Muestra un botón en el sobre que abre la canción en Spotify o YouTube; si lo toca, la cajita de música no suena encima.
 
