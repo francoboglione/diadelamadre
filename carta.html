@@ -947,16 +947,16 @@ window.CARTA = {
     bTodo.addEventListener('click', verTodo);
     bSon.addEventListener('click', function () { sfx.desbloquear(); mudo = !mudo; musica.silenciar(mudo); sfx.silenciar(mudo); if (!mudo && !externa) musica.tocar(); pintarSon(); });
     var enControles = function (e) { var t = e && e.target; return !!(t && t.nodeType === 1 && (ctrl.contains(t) || (bVolver && bVolver.contains(t)))); };
-    var soltar = function () { tocado = Date.now(); if (!terminado && siguiendo) { ySoltar = window.pageYOffset; siguiendo = false; pintarPausa(); } };
+    var soltar = function (desde) { tocado = Date.now(); if (!terminado && siguiendo) { ySoltar = typeof desde === 'number' ? desde : yPropio; siguiendo = false; pintarPausa(); } };
     window.addEventListener('touchmove', function (e) { if (!enControles(e)) soltar(); }, { passive: true });
     window.addEventListener('touchend', function () { tocando = false; tocado = Date.now(); }, { passive: true });
     window.addEventListener('touchcancel', function () { tocando = false; }, { passive: true });
     window.addEventListener('keydown', function (e) { if (/^(ArrowUp|ArrowDown|PageUp|PageDown|Home|End| )$/.test(e.key) && e.target === document.body) soltar(); });
-    window.addEventListener('wheel', soltar, { passive: true });
+    window.addEventListener('wheel', function () { soltar(); }, { passive: true });
     /* cualquier otro scroll que no hicimos nosotros (barra, lector de pantalla, teclado) también cuenta */
     window.addEventListener('scroll', function () {
       if (terminado || !siguiendo || tocando) return;
-      if (Math.abs(window.pageYOffset - yPropio) > 80) soltar();
+      if (Math.abs(window.pageYOffset - yPropio) > 80) soltar(yPropio);
     }, { passive: true });
     document.addEventListener('mousedown', function (e) { if (!enControles(e) && e.clientX >= document.documentElement.clientWidth) soltar(); });
     window.addEventListener('touchstart', function (e) { if (enControles(e)) return; tocando = true; soltar(); }, { passive: true });
