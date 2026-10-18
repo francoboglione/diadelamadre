@@ -123,22 +123,28 @@ def main():
     if len(salen) > 30:
         avisos.append("hay %d fotos: con más de 30 la carta se hace larga y el archivo pesado" % len(salen))
 
-    # fotos dentro de tarjetas (regalos, locuras): mismas reglas que las del álbum
-    for bloque in ("regalos", "locuras"):
-        for g in ((datos.get(bloque) or {}).get("lista") or []):
-            for clave in ("foto", "fotoAtras"):
-                src = str(g.get(clave) or "")
-                if not src or a.sin_embeber or re.match(r"^(data:|https?:)", src):
-                    continue
-                local = src if os.path.isabs(src) else os.path.join(base, src)
-                if os.path.isfile(local):
-                    try:
-                        g[clave] = foto_embebida(local, min(a.lado, 900))
-                    except Exception as e:
-                        avisos.append("salteé %s (%s)" % (os.path.basename(src), e.__class__.__name__))
-                        g[clave] = ""
-                else:
-                    avisos.append("no encontré la foto de tarjeta '%s'" % src)
+    # fotos dentro de tarjetas (regalos, locuras) y de la línea de tiempo: mismas reglas que las del álbum
+    def con_fotos():
+        for bloque in ("regalos", "locuras", "hitos"):
+            caja = datos.get(bloque) or {}
+            if bloque == "hitos" and caja:
+                yield caja
+            for g in (caja.get("lista") or []):
+                yield g
+    for g in con_fotos():
+        for clave in ("foto", "fotoAtras"):
+            src = str(g.get(clave) or "")
+            if not src or a.sin_embeber or re.match(r"^(data:|https?:)", src):
+                continue
+            local = src if os.path.isabs(src) else os.path.join(base, src)
+            if os.path.isfile(local):
+                try:
+                    g[clave] = foto_embebida(local, min(a.lado, 900))
+                except Exception as e:
+                    avisos.append("salteé %s (%s)" % (os.path.basename(src), e.__class__.__name__))
+                    g[clave] = ""
+            else:
+                avisos.append("no encontré la foto de tarjeta '%s'" % src)
 
     musica = datos.get("musica") or {}
     arch = str(musica.get("archivo") or "")

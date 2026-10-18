@@ -37,6 +37,8 @@ async def main():
         hv=await pg.evaluate("document.querySelectorAll('.hito.on').length"); ok('8 fechas en la línea de tiempo', hv==8, hv)
         cf=await pg.evaluate("[].map.call(document.querySelectorAll('.cifra b'),function(b){return b.textContent}).join(',')"); ok('cifras 4,10,2,85', cf=='4,10,2,85', cf)
         imgs=await pg.evaluate("[].map.call(document.querySelectorAll('.reg-foto'),function(i){return i.naturalWidth>0})"); ok('fotos de tarjetas cargadas (5)', len(imgs)==5 and all(imgs), imgs)
+        hf=await pg.evaluate("[].map.call(document.querySelectorAll('.hitos-foto img,.hito-foto'),function(i){return i.naturalWidth>0})"); ok('foto de apertura + 2 fotos en fechas', len(hf)==3 and all(hf), hf)
+        de=await pg.evaluate("document.querySelector('.firma').innerText"); ok('firma familia Boglione', 'familia Boglione' in de, de)
         cards=await pg.query_selector_all('.regalo'); ok('5 tarjetas (3 locuras + 2 regalos)', len(cards)==5)
         for i,exp in ((1,'4.000'),(2,'queda en Ámsterdam'),(3,'Chofer con flores')):
             await cards[i].scroll_into_view_if_needed(); await cards[i].tap(); await pg.wait_for_timeout(900)

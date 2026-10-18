@@ -169,6 +169,13 @@ button{font:inherit;color:inherit}
 .reg-foto{display:block;width:100%;height:auto;max-height:340px;object-fit:cover;border-radius:10px;background:var(--papel2)}
 /* línea de tiempo */
 .hitos-tit{font-weight:700}
+.hitos-foto{display:block;margin:6px auto 22px;width:86%;max-width:380px;background:#fffdf9;padding:10px 10px 0;border-radius:3px;
+  box-shadow:0 16px 32px -16px rgba(0,0,0,.5),0 1px 3px rgba(0,0,0,.2);opacity:0;transform:rotate(-2deg) translateY(24px) scale(.92);
+  transition:opacity .9s ease,transform 1.1s cubic-bezier(.2,.7,.2,1.15)}
+.hitos-foto.on{opacity:1;transform:rotate(-2deg)}
+.hitos-foto img{display:block;width:100%;height:auto;max-height:440px;object-fit:cover;background:var(--papel2)}
+.hitos-foto figcaption{font-family:var(--mano);text-align:center;padding:8px 6px 10px;color:#3b2a30;font-size:.92em;line-height:1.25}
+.hito-foto{display:block;width:100%;max-width:300px;height:auto;max-height:230px;object-fit:cover;border-radius:10px;margin-top:8px;background:var(--papel2)}
 .cifras{display:flex;flex-wrap:wrap;justify-content:center;padding:6px 0 4px}
 .cifra{flex:1 1 70px;text-align:center;padding:4px 6px}
 .cifra b{display:block;font-family:var(--display);font-weight:400;font-size:44px;line-height:1;color:var(--acento)}
@@ -221,7 +228,7 @@ button{font:inherit;color:inherit}
   .letra-grande .controles button{font-size:15px;padding:12px 13px}
 }
 @media (prefers-reduced-motion:reduce){
-  .hito{transition:none}
+  .hito,.hitos-foto{transition:none}
   .sobre{animation:none}
   .tira{animation:none}
   .carrusel{overflow-x:auto}
@@ -613,7 +620,14 @@ window.CARTA = {
     if (!lista.length) return;
     if (H.titulo) texto('p', 'hitos-tit', H.titulo, 500);
     var d = el('div', 'bloque hitos'); carta.appendChild(d);
-    var cif = null;
+    var cif = null, portada = null;
+    if (H.foto) {
+      portada = el('figure', 'hitos-foto');
+      var pim = el('img'); pim.alt = H.pie || ''; pim.decoding = 'async'; pim.src = fuente(H.foto); pim.onload = function () { medir(); };
+      portada.appendChild(pim);
+      if (H.pie) portada.appendChild(el('figcaption', '', txt(H.pie)));
+      d.appendChild(portada);
+    }
     if (H.cifras && H.cifras.length) {
       cif = el('div', 'cifras');
       H.cifras.forEach(function (c) { var x = el('div', 'cifra'); x.appendChild(el('b', '', String(c.n))); x.appendChild(el('span', '', c.t)); cif.appendChild(x); });
@@ -626,16 +640,18 @@ window.CARTA = {
       if (h.fecha) li.appendChild(el('span', 'hito-fecha', txt(h.fecha)));
       li.appendChild(el('span', 'hito-tit', txt(h.titulo || '')));
       if (h.texto) li.appendChild(el('span', 'hito-txt', txt(h.texto)));
+      if (h.foto) { var hf = el('img', 'hito-foto'); hf.alt = h.titulo || ''; hf.decoding = 'async'; hf.src = fuente(h.foto); hf.onload = function () { medir(); }; li.appendChild(hf); }
       ul.appendChild(li); return li;
     });
     bloques.push({ el: d, tipo: 'regalos' });
-    var k = -1;
+    var k = -2;
     pasos.push({ hacer: function () {
       cursor = d;
-      if (k < 0) { k = 0; if (cif) { cif.style.opacity = '1'; sfx.brillo(); return { ms: 1300 }; } }
+      if (k === -2) { k = -1; if (portada) { cursor = portada; portada.classList.add('on'); sfx.foto(); return { ms: 1800 }; } }
+      if (k === -1) { k = 0; if (cif) { cif.style.opacity = '1'; sfx.brillo(); return { ms: 1300 }; } }
       if (k < items.length) { cursor = items[k]; items[k].classList.add('on'); sfx.nota(k); k++; return { ms: 1100 }; }
       return { ms: 600, listo: true };
-    }, todo: function () { if (cif) cif.style.opacity = '1'; items.forEach(function (i) { i.classList.add('on'); }); } });
+    }, todo: function () { if (portada) portada.classList.add('on'); if (cif) cif.style.opacity = '1'; items.forEach(function (i) { i.classList.add('on'); }); } });
   }
 
   var armada = false;
