@@ -1,0 +1,41 @@
+name: Bajar fotos de ejemplo
+on:
+  push:
+    branches: [fotos-estela]
+    paths: [".github/workflows/bajar-fotos.yml"]
+permissions:
+  contents: write
+jobs:
+  bajar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bajar fotos generadas con IA
+        run: |
+          mkdir -p ejemplos/estela
+          curl -fsSL -o ejemplos/estela/00.png "https://d8j0ntlcm91z4.cloudfront.net/user_3G6ddtbBCGdnw7Nrs4d26iVrXrC/hf_20261018_192927_78bf93e8-bb53-4dd7-831a-c62c1b842c1f.png"
+          curl -fsSL -o ejemplos/estela/01.png "https://d8j0ntlcm91z4.cloudfront.net/user_3G6ddtbBCGdnw7Nrs4d26iVrXrC/hf_20261018_193057_975afd8b-d26a-4e63-9dfb-74ace5894aa5.png"
+          curl -fsSL -o ejemplos/estela/02.png "https://d8j0ntlcm91z4.cloudfront.net/user_3G6ddtbBCGdnw7Nrs4d26iVrXrC/hf_20261018_193057_4aa026ab-cf10-478f-a563-a19df8e6708b.png"
+          curl -fsSL -o ejemplos/estela/03.png "https://d8j0ntlcm91z4.cloudfront.net/user_3G6ddtbBCGdnw7Nrs4d26iVrXrC/hf_20261018_193057_aadc507c-a8de-4892-ab04-b6921090f89e.png"
+          curl -fsSL -o ejemplos/estela/04.png "https://d8j0ntlcm91z4.cloudfront.net/user_3G6ddtbBCGdnw7Nrs4d26iVrXrC/hf_20261018_193057_e206d1fd-6799-495e-8dde-c462bc60d767.png"
+          curl -fsSL -o ejemplos/estela/05.png "https://d8j0ntlcm91z4.cloudfront.net/user_3G6ddtbBCGdnw7Nrs4d26iVrXrC/hf_20261018_193057_f83f571c-594a-4648-8c33-a280b94e51a2.png"
+          curl -fsSL -o ejemplos/estela/06.png "https://d8j0ntlcm91z4.cloudfront.net/user_3G6ddtbBCGdnw7Nrs4d26iVrXrC/hf_20261018_193057_61aff292-257c-4963-95d7-c87e3c419c7a.png"
+          curl -fsSL -o ejemplos/estela/07.png "https://d8j0ntlcm91z4.cloudfront.net/user_3G6ddtbBCGdnw7Nrs4d26iVrXrC/hf_20261018_193057_39927f1d-5d17-4613-bda2-99944e5238e3.png"
+          curl -fsSL -o ejemplos/estela/08.png "https://d8j0ntlcm91z4.cloudfront.net/user_3G6ddtbBCGdnw7Nrs4d26iVrXrC/hf_20261018_193057_fedd6bb0-d9c6-4717-9aea-03be2a975310.png"
+          curl -fsSL -o ejemplos/estela/09.png "https://d8j0ntlcm91z4.cloudfront.net/user_3G6ddtbBCGdnw7Nrs4d26iVrXrC/hf_20261018_193057_f8a80e16-3ce3-4fb1-94e6-1065373a010f.png"
+          curl -fsSL -o ejemplos/estela/10.png "https://d8j0ntlcm91z4.cloudfront.net/user_3G6ddtbBCGdnw7Nrs4d26iVrXrC/hf_20261018_193057_611efe2b-e955-42d6-9cb9-e453064cecfb.png"
+          curl -fsSL -o ejemplos/estela/11.png "https://d8j0ntlcm91z4.cloudfront.net/user_3G6ddtbBCGdnw7Nrs4d26iVrXrC/hf_20261018_193057_8e823402-4886-42b5-8500-f3ec00e8ad34.png"
+          curl -fsSL -o ejemplos/estela/12.png "https://d8j0ntlcm91z4.cloudfront.net/user_3G6ddtbBCGdnw7Nrs4d26iVrXrC/hf_20261018_193206_a70a15d6-fc49-4bf8-b1db-547a4ec7b0ca.png"
+          curl -fsSL -o ejemplos/estela/13.png "https://d8j0ntlcm91z4.cloudfront.net/user_3G6ddtbBCGdnw7Nrs4d26iVrXrC/hf_20261018_193205_e4309c55-7f2f-4e65-9685-2b8012d71d9f.png"
+          curl -fsSL -o ejemplos/estela/14.png "https://d8j0ntlcm91z4.cloudfront.net/user_3G6ddtbBCGdnw7Nrs4d26iVrXrC/hf_20261018_193205_96dd22e0-596b-46f1-828c-a9eddb80752e.png"
+          curl -fsSL -o ejemplos/estela/15.png "https://d8j0ntlcm91z4.cloudfront.net/user_3G6ddtbBCGdnw7Nrs4d26iVrXrC/hf_20261018_193205_e241080d-91b8-4bc6-bd71-a6ad6ac1bec8.png"
+          curl -fsSL -o ejemplos/estela/16.png "https://d8j0ntlcm91z4.cloudfront.net/user_3G6ddtbBCGdnw7Nrs4d26iVrXrC/hf_20261018_193205_7feeafee-798f-4e03-8fda-79de11026643.png"
+          curl -fsSL -o ejemplos/estela/17.png "https://d8j0ntlcm91z4.cloudfront.net/user_3G6ddtbBCGdnw7Nrs4d26iVrXrC/hf_20261018_193206_105e5874-b152-436f-b4d8-2ead01dbcf8c.png"
+          ls -la ejemplos/estela
+      - name: Guardar
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add ejemplos/estela
+          git commit -m "Fotos de ejemplo de Estela (generadas con IA)"
+          git push
