@@ -78,6 +78,10 @@ window.CARTA = {
 ] }
 ```
 
+- **Línea de tiempo** (`hitos`): cifras grandes arriba y fechas que aparecen una por una. `{ "titulo": "…", "cifras": [{ "n": 4, "t": "hijos" }], "lista": [{ "fecha": "14 de septiembre de 1962", "titulo": "Nace Rossana", "texto": "…", "logro": true }] }`
+- **Locuras** (`locuras`): las mismas tarjetas que los regalos, para anécdotas. Las tarjetas aceptan `foto` (adelante), `fotoAtras` (al darla vuelta) y `chip` (una etiqueta).
+- **Letra grande** (`"lectura": "grande"`): texto y botones más grandes, pensado para abuelas. Con `"velocidad": 0.85` se escribe más despacio.
+- **Celulares con poca memoria**: la carta lo detecta sola y usa menos pétalos y sombras más simples.
 - **Canción por link** (`musica.enlace`): `{ "texto": "🎶 Primero, poné Mamma Mia", "url": "https://open.spotify.com/…", "nota": "…" }`. Muestra un botón en el sobre que abre la canción en Spotify o YouTube; si lo toca, la cajita de música no suena encima.
 
 Los textos que no pongas (`saludo`, `intro`, `recuerdos`, `antesDestacado`, `destacado`, `gracias`, `final`, `cierre`, `sub`, `firma`, `pd`) se completan solos. También acepta `"velocidad": 1.5` para que se escriba más rápido, y una paleta propia con colores (`{"fondo": "#…", "papel": "#…", "acento": "#…"}`).
