@@ -851,7 +851,7 @@ window.CARTA = {
       pintarPausa();
     });
     bTodo.addEventListener('click', verTodo);
-    bSon.addEventListener('click', function () { mudo = !mudo; musica.silenciar(mudo); sfx.silenciar(mudo); if (!mudo && !externa) musica.tocar(); pintarSon(); });
+    bSon.addEventListener('click', function () { sfx.desbloquear(); mudo = !mudo; musica.silenciar(mudo); sfx.silenciar(mudo); if (!mudo && !externa) musica.tocar(); pintarSon(); });
     var enControles = function (e) { var t = e && e.target; return !!(t && t.nodeType === 1 && ctrl.contains(t)); };
     var soltar = function () { tocado = Date.now(); if (!terminado && siguiendo) { siguiendo = false; pintarPausa(); } };
     window.addEventListener('touchmove', function (e) { if (!enControles(e)) soltar(); }, { passive: true });
@@ -868,8 +868,9 @@ window.CARTA = {
   var abriendo = false;
   function abrir() {
     if (abriendo) return; abriendo = true;
-    sfx.abrir();
+    sfx.desbloquear();
     if (!externa) musica.tocar();
+    sfx.abrir();
     construir();
     if (reduce) { mostrarCarta(); verTodo(); return; }
     sobre.classList.add('abierto');
@@ -976,20 +977,52 @@ window.CARTA = {
       if (!ac) {
         try {
           try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e0) {}
-          ac = new AC();
+          try { ac = new AC({ latencyHint: 'interactive' }); } catch (eA) { ac = new AC(); }
           out = ac.createGain(); out.gain.value = 0.9; out.connect(ac.destination);
           var n = ac.sampleRate, b = ac.createBuffer(1, n, n), d = b.getChannelData(0);
           for (var i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
           ruido = b;
           document.addEventListener('visibilitychange', function () {
-            try { if (document.hidden) ac.suspend(); else ac.resume(); } catch (e1) {}
+            try { if (document.hidden) ac.suspend(); } catch (e1) {}
           });
         } catch (e) { ac = null; }
       }
-      if (ac && ac.state === 'suspended' && ac.resume && !document.hidden) { try { ac.resume(); } catch (e2) {} }
       return ac;
     }
     function ok() { return hay && !mute && ac && ruido; }
+    /* iPhone: el audio web se calla con la tecla de silencio y queda trabado al volver de otra app.
+       Un <audio> mudo en loop, iniciado con el toque, pone la sesión en modo "reproducción";
+       y cualquier toque posterior reanuda el audio si iOS lo suspendió. */
+    var tag = null, escuchando = false;
+    function wavMudo() {
+      var n = 4000, b = 'RIFF', i;
+      function u32(v) { return String.fromCharCode(v & 255, (v >> 8) & 255, (v >> 16) & 255, (v >> 24) & 255); }
+      function u16(v) { return String.fromCharCode(v & 255, (v >> 8) & 255); }
+      b += u32(36 + n) + 'WAVEfmt ' + u32(16) + u16(1) + u16(1) + u32(8000) + u32(8000) + u16(1) + u16(8) + 'data' + u32(n);
+      for (i = 0; i < n; i++) b += String.fromCharCode(128);
+      return 'data:audio/wav;base64,' + btoa(b);
+    }
+    function reanudar() {
+      try { if (ac && ac.state !== 'running' && !document.hidden && ac.resume) { var r = ac.resume(); if (r && r['catch']) r['catch'](function () {}); } } catch (e) {}
+      try { if (tag && tag.paused) { var q = tag.play(); if (q && q['catch']) q['catch'](function () {}); } } catch (e2) {}
+    }
+    function desbloquear() {
+      try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e0) {}
+      try {
+        if (!tag) { tag = new Audio(); tag.src = wavMudo(); tag.loop = true; tag.preload = 'auto'; tag.setAttribute('playsinline', ''); tag.setAttribute('webkit-playsinline', ''); }
+      } catch (e1) { tag = null; }
+      ctx();
+      if (ac) {
+        try { var sb = ac.createBufferSource(); sb.buffer = ac.createBuffer(1, 1, 22050); sb.connect(ac.destination); sb.start(0); } catch (e3) {}
+      }
+      reanudar();
+      if (!escuchando) {
+        escuchando = true;
+        ['touchend', 'click', 'keydown'].forEach(function (ev) { document.addEventListener(ev, reanudar, true); });
+        document.addEventListener('visibilitychange', function () { if (!document.hidden) reanudar(); });
+        window.addEventListener('pageshow', reanudar);
+      }
+    }
     function soplo(t, dur, tipo, f, q, v, f2) {
       var s = ac.createBufferSource(), fl = ac.createBiquadFilter(), g = ac.createGain();
       s.buffer = ruido; fl.type = tipo; fl.Q.value = q;
@@ -1007,7 +1040,8 @@ window.CARTA = {
     function hz(m) { return 440 * Math.pow(2, (m - 69) / 12); }
     function campana(t, m, v, dur) { tono(t, hz(m), dur, v); tono(t, hz(m + 12) * 1.003, dur * 0.45, v * 0.22); }
     return {
-      hay: hay, ctx: ctx,
+      hay: hay, ctx: ctx, desbloquear: desbloquear, reanudar: reanudar,
+      estado: function () { return ac ? ac.state : 'sin-crear'; },
       silenciar: function (m) { mute = m; },
       /* lacre que se rompe y papel que sale del sobre */
       abrir: function () {

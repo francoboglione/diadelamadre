@@ -3,6 +3,8 @@ from playwright.async_api import async_playwright
 F='file://'+os.path.abspath(sys.argv[1] if len(sys.argv)>1 else 'para-fernanda.html')
 INIT = """
 window.__sfx = 0; window.__long = [];
+(function(){var A0=window.AudioContext; if(A0){window.AudioContext=function(o){var a=o?new A0(o):new A0(); window.__ac=a; return a}; window.AudioContext.prototype=A0.prototype;}
+ var P=HTMLMediaElement.prototype.play; HTMLMediaElement.prototype.play=function(){window.__tag=this; return P.apply(this,arguments)};})();
 (function(){var AC=window.AudioContext; if(AC){var o=AC.prototype.createBufferSource; AC.prototype.createBufferSource=function(){window.__sfx++;return o.apply(this,arguments)}}})();
 try{new PerformanceObserver(function(l){l.getEntries().forEach(function(e){window.__long.push(Math.round(e.duration))})}).observe({type:'longtask',buffered:true})}catch(e){}
 """
@@ -78,6 +80,21 @@ async def main():
         await pg.click('.controles button:nth-child(3)'); s1=await pg.evaluate('window.__sfx'); await pg.wait_for_timeout(1500); s2=await pg.evaluate('window.__sfx')
         ok('"Sin sonido" apaga también el tipeo', s1==s2, f'{s1}->{s2}')
         ok('sin errores con interacción', not errs, errs[:3]); await ctx.close()
+        # 3b) audio unlock (iPhone / Android)
+        ctx,pg,errs=await page(b,390,844,touch=True)
+        await pg.tap('.btn'); await pg.wait_for_timeout(1500)
+        st=await pg.evaluate("window.__ac && window.__ac.state")
+        ok('audio activo al tocar el sobre', st=='running', st)
+        tg=await pg.evaluate("!!(window.__tag && !window.__tag.paused && /^data:audio\/wav/.test(window.__tag.src))")
+        ok('modo reproducción de iPhone (audio mudo en loop)', tg)
+        await pg.evaluate("window.__ac.suspend()"); await pg.wait_for_timeout(300)
+        await pg.tap('.carta'); await pg.wait_for_timeout(500)
+        st2=await pg.evaluate("window.__ac.state"); ok('se reanuda con el siguiente toque (vuelta de otra app)', st2=='running', st2)
+        await pg.evaluate("window.__tag.pause()"); await pg.tap('.carta'); await pg.wait_for_timeout(300)
+        ok('el audio mudo vuelve a arrancar si iOS lo frena', await pg.evaluate("!window.__tag.paused"))
+        n0=await pg.evaluate('window.__sfx'); await pg.wait_for_timeout(1500); n1=await pg.evaluate('window.__sfx')
+        ok('siguen sonando los efectos después', n1>n0, f'{n0}->{n1}')
+        ok('sin errores de audio', not errs, errs[:3]); await ctx.close()
         # 4) gift cards
         ctx,pg,errs=await page(b,390,844)
         await pg.click('.btn'); await pg.wait_for_timeout(3000); await pg.click('.controles button:nth-child(2)'); await pg.wait_for_timeout(800)
@@ -101,7 +118,7 @@ async def main():
         r=await pg.evaluate("""({sin:document.querySelectorAll('.c:not(.t)').length, reg:document.querySelectorAll('.regalo:not(.on)').length,
            g:!!document.querySelector('.grande.on'), fin:!document.querySelector('.fin').hidden, sfx:window.__sfx})""")
         ok('reducir movimiento: carta completa al instante', r['sin']==0 and r['reg']==0 and r['g'] and r['fin'], r)
-        ok('reducir movimiento: sin efectos', r['sfx']==0, r['sfx'])
+        ok('reducir movimiento: sin efectos (solo el desbloqueo mudo)', r['sfx']<=1, r['sfx'])
         ok('sin errores reducir movimiento', not errs, errs[:3]); await ctx.close()
         # 6) address-bar resize must not relayout photos mid-flight
         ctx,pg,errs=await page(b,390,760,vel=2)

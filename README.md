@@ -95,7 +95,7 @@ El ejemplo de este repo se genera con `python3 armar.py ejemplo.json --sin-embeb
 
 ## Sonidos
 
-Además de la música, la carta tiene efectos sintetizados y bajitos (sin archivos): el lacre al abrir, un tecleo suave mientras escribe, un soplido cuando cae cada foto, el marcador, las notitas de la lista, las tarjetas que se dan vuelta y unas campanitas al final. El botón **Sonido** apaga todo junto. Con `"sonidos": false` se desactivan, y con "Reducir movimiento" no suenan.
+Además de la música, la carta tiene efectos sintetizados y bajitos (sin archivos): el lacre al abrir, un tecleo suave mientras escribe, un soplido cuando cae cada foto, el marcador, las notitas de la lista, las tarjetas que se dan vuelta y unas campanitas al final. El botón **Sonido** apaga todo junto. En iPhone suena aunque el celular esté en silencio, y si iOS corta el audio al volver de otra app, se reanuda con el siguiente toque. Con `"sonidos": false` se desactivan, y con "Reducir movimiento" no suenan.
 
 ## Pruebas
 
