@@ -78,7 +78,7 @@ window.CARTA = {
 ] }
 ```
 
-- **Línea de tiempo** (`hitos`): una foto de apertura opcional (`foto` y `pie`), cifras grandes y fechas que aparecen una por una. `{ "titulo": "…", "cifras": [{ "n": 4, "t": "hijos" }], "lista": [{ "fecha": "14 de septiembre de 1962", "titulo": "Nace Rossana", "texto": "…", "logro": true, "foto": "fotos/x.jpg" }] }`. Cada fecha también acepta su propia `foto`.
+- **Línea de tiempo** (`hitos`): una foto de apertura (`foto`) o un collage de varias (`fotos`), con `pie`, cifras grandes y fechas que aparecen una por una. `{ "titulo": "…", "cifras": [{ "n": 4, "t": "hijos" }], "lista": [{ "fecha": "14 de septiembre de 1962", "titulo": "Nace Rossana", "texto": "…", "logro": true, "foto": "fotos/x.jpg" }] }`. Cada fecha acepta su propia `foto`, o varias en una lista.
 - **Locuras** (`locuras`): las mismas tarjetas que los regalos, para anécdotas. Las tarjetas aceptan `foto` (adelante), `fotoAtras` (al darla vuelta) y `chip` (una etiqueta).
 - **Letra grande** (`"lectura": "grande"`): texto y botones más grandes, pensado para abuelas. Con `"velocidad": 0.85` se escribe más despacio.
 - **Celulares con poca memoria**: la carta lo detecta sola y usa menos pétalos y sombras más simples.

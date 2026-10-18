@@ -36,17 +36,18 @@ async def main():
         lt=await pg.evaluate('window.__long'); ok('celular viejo: lectura fluida (nada >150 ms después de abrir)', not [d for s_,d in lt if s_>t0+4000 and d>150], max([d for s_,d in lt if s_>t0+4000] or [0]))
         hv=await pg.evaluate("document.querySelectorAll('.hito.on').length"); ok('8 fechas en la línea de tiempo', hv==8, hv)
         cf=await pg.evaluate("[].map.call(document.querySelectorAll('.cifra b'),function(b){return b.textContent}).join(',')"); ok('cifras 4,10,2,85', cf=='4,10,2,85', cf)
-        imgs=await pg.evaluate("[].map.call(document.querySelectorAll('.reg-foto'),function(i){return i.naturalWidth>0})"); ok('fotos de tarjetas cargadas (5)', len(imgs)==5 and all(imgs), imgs)
-        hf=await pg.evaluate("[].map.call(document.querySelectorAll('.hitos-foto img,.hito-foto'),function(i){return i.naturalWidth>0})"); ok('foto de apertura + 2 fotos en fechas', len(hf)==3 and all(hf), hf)
+        imgs=await pg.evaluate("[].map.call(document.querySelectorAll('.reg-foto'),function(i){return i.naturalWidth>0})"); ok('fotos de tarjetas cargadas (6)', len(imgs)==6 and all(imgs), imgs)
+        hf=await pg.evaluate("[].map.call(document.querySelectorAll('.cfoto img,.hito-foto'),function(i){return i.naturalWidth>0})"); ok('collage (4) + 6 fotos en fechas', len(hf)==10 and all(hf), hf)
+        vis=await pg.evaluate("document.querySelectorAll('.aparece:not(.on)').length"); ok('collage, pie y cifras visibles', vis==0, vis)
         de=await pg.evaluate("document.querySelector('.firma').innerText"); ok('firma familia Boglione', 'familia Boglione' in de, de)
-        cards=await pg.query_selector_all('.regalo'); ok('5 tarjetas (3 locuras + 2 regalos)', len(cards)==5)
-        for i,exp in ((1,'4.000'),(2,'queda en Ámsterdam'),(3,'Chofer con flores')):
+        cards=await pg.query_selector_all('.regalo'); ok('6 tarjetas (4 locuras + 2 regalos)', len(cards)==6)
+        for i,exp in ((1,'4.000'),(2,'queda en Ámsterdam'),(4,'Chofer con flores')):
             await cards[i].scroll_into_view_if_needed(); await cards[i].tap(); await pg.wait_for_timeout(900)
             txt=await cards[i].inner_text(); ok(f'tarjeta {i} se da vuelta', await cards[i].get_attribute('aria-pressed')=='true' and exp in txt)
         ok('celular viejo: sin errores', not errs, errs[:2])
         for sel,name in (('.hitos','lili-hitos'),('.regalos','lili-locuras')):
             y=await pg.evaluate(f"document.querySelector('{sel}').getBoundingClientRect().top+scrollY"); await pg.evaluate(f'scrollTo(0,{y}-140)'); await pg.wait_for_timeout(500); await pg.screenshot(path=name+'.png')
-        await cards[3].scroll_into_view_if_needed(); await pg.wait_for_timeout(500); await pg.screenshot(path='lili-uber.png')
+        
         await ctx.close(); await b.close()
     print(f'\n{sum(R)}/{len(R)} OK')
 asyncio.run(main())

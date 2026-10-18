@@ -173,8 +173,22 @@ button{font:inherit;color:inherit}
   box-shadow:0 16px 32px -16px rgba(0,0,0,.5),0 1px 3px rgba(0,0,0,.2);opacity:0;transform:rotate(-2deg) translateY(24px) scale(.92);
   transition:opacity .9s ease,transform 1.1s cubic-bezier(.2,.7,.2,1.15)}
 .hitos-foto.on{opacity:1;transform:rotate(-2deg)}
+.hitos-foto.aparece{transform:rotate(-2deg) translateY(24px) scale(.92)}
+.hitos-foto.aparece.on{transform:rotate(-2deg)}
 .hitos-foto img{display:block;width:100%;height:auto;max-height:440px;object-fit:cover;background:var(--papel2)}
 .hitos-foto figcaption{font-family:var(--mano);text-align:center;padding:8px 6px 10px;color:#3b2a30;font-size:.92em;line-height:1.25}
+.aparece{opacity:0;transition:opacity .9s ease,transform 1s cubic-bezier(.2,.7,.2,1.15)}
+.aparece.on{opacity:1}
+.collage{display:flex;flex-wrap:wrap;justify-content:center;padding:4px 2px 0}
+.cpol{width:47%;margin:0 -1% 10px;background:#fffdf9;padding:6px 6px 16px;border-radius:2px;
+  box-shadow:0 12px 24px -12px rgba(0,0,0,.5),0 1px 3px rgba(0,0,0,.2);transform:rotate(var(--r)) translateY(22px) scale(.88)}
+.cpol.on{transform:rotate(var(--r))}
+.cfoto{position:relative;padding-top:84%;overflow:hidden;background:var(--papel2)}
+.cfoto img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
+.collage-pie{text-align:center;font-size:.95em;line-height:1.3;color:var(--suave);margin:6px 12px 18px!important}
+.cifras.aparece{transform:none}
+.hito-fotos{display:flex;flex-wrap:wrap;justify-content:space-between}
+.hito-fotos .hito-foto{width:48.5%}
 .hito-foto{display:block;width:100%;max-width:300px;height:auto;max-height:230px;object-fit:cover;border-radius:10px;margin-top:8px;background:var(--papel2)}
 .cifras{display:flex;flex-wrap:wrap;justify-content:center;padding:6px 0 4px}
 .cifra{flex:1 1 70px;text-align:center;padding:4px 6px}
@@ -228,7 +242,7 @@ button{font:inherit;color:inherit}
   .letra-grande .controles button{font-size:15px;padding:12px 13px}
 }
 @media (prefers-reduced-motion:reduce){
-  .hito,.hitos-foto{transition:none}
+  .hito,.hitos-foto,.aparece{transition:none}
   .sobre{animation:none}
   .tira{animation:none}
   .carrusel{overflow-x:auto}
@@ -699,44 +713,73 @@ window.CARTA = {
     im.onload = function () { medir(); };
     return im;
   }
-  /* línea de tiempo: cifras arriba y fechas que aparecen una por una */
+  /* línea de tiempo: collage o foto de apertura, cifras y fechas que aparecen una por una */
+  function lista(x) { return !x ? [] : typeof x === 'string' ? [x] : x; }
+  function imgMedida(src, alt, cls) {
+    var im = el('img', cls || ''); im.alt = alt || ''; im.decoding = 'async'; im.src = fuente(src);
+    im.onload = function () { medir(); };
+    return im;
+  }
   function hitos(H) {
-    var lista = (H && H.lista) || [];
-    if (!lista.length) return;
+    var items0 = (H && H.lista) || [];
+    if (!items0.length) return;
     if (H.titulo) texto('p', 'hitos-tit', H.titulo, 500);
     var d = el('div', 'bloque hitos'); carta.appendChild(d);
-    var cif = null, portada = null;
-    if (H.foto) {
-      portada = el('figure', 'hitos-foto');
-      var pim = el('img'); pim.alt = H.pie || ''; pim.decoding = 'async'; pim.src = fuente(H.foto); pim.onload = function () { medir(); };
-      portada.appendChild(pim);
-      if (H.pie) portada.appendChild(el('figcaption', '', txt(H.pie)));
-      d.appendChild(portada);
+    var previos = [];
+    var portadas = lista(H.fotos).length ? lista(H.fotos) : lista(H.foto);
+    if (portadas.length === 1) {
+      var fig = el('figure', 'hitos-foto');
+      fig.appendChild(imgMedida(portadas[0], H.pie));
+      if (H.pie) fig.appendChild(el('figcaption', '', txt(H.pie)));
+      d.appendChild(fig);
+      previos.push({ el: fig, ms: 1800 });
+    } else if (portadas.length > 1) {
+      var col = el('div', 'collage'); d.appendChild(col);
+      portadas.forEach(function (src, i) {
+        var cp = el('figure', 'cpol');
+        cp.style.setProperty('--r', [-3, 2.5, 2, -2.5, -1.5, 3][i % 6] + 'deg');
+        var box = el('div', 'cfoto'); box.appendChild(imgMedida(src, H.pie)); cp.appendChild(box);
+        col.appendChild(cp);
+        previos.push({ el: cp, ms: 750 });
+      });
+      if (H.pie) { var cpie = el('p', 'collage-pie', txt(H.pie)); d.appendChild(cpie); previos.push({ el: cpie, ms: 1200, mudo: true }); }
     }
+    var cif = null;
     if (H.cifras && H.cifras.length) {
       cif = el('div', 'cifras');
       H.cifras.forEach(function (c) { var x = el('div', 'cifra'); x.appendChild(el('b', '', String(c.n))); x.appendChild(el('span', '', c.t)); cif.appendChild(x); });
-      cif.style.opacity = '0'; cif.style.transition = 'opacity .9s ease';
       d.appendChild(cif);
+      previos.push({ el: cif, ms: 1300, brillo: true });
     }
     var ul = el('ul', 'linea'); d.appendChild(ul);
-    var items = lista.map(function (h) {
+    var items = items0.map(function (h) {
       var li = el('li', 'hito' + (h.logro ? ' logro' : ''));
       if (h.fecha) li.appendChild(el('span', 'hito-fecha', txt(h.fecha)));
       li.appendChild(el('span', 'hito-tit', txt(h.titulo || '')));
       if (h.texto) li.appendChild(el('span', 'hito-txt', txt(h.texto)));
-      if (h.foto) { var hf = el('img', 'hito-foto'); hf.alt = h.titulo || ''; hf.decoding = 'async'; hf.src = fuente(h.foto); hf.onload = function () { medir(); }; li.appendChild(hf); }
+      var fs = lista(h.foto);
+      if (fs.length === 1) li.appendChild(imgMedida(fs[0], h.titulo, 'hito-foto'));
+      else if (fs.length > 1) {
+        var par = el('span', 'hito-fotos');
+        fs.forEach(function (src) { par.appendChild(imgMedida(src, h.titulo, 'hito-foto')); });
+        li.appendChild(par);
+      }
       ul.appendChild(li); return li;
     });
+    previos.forEach(function (p) { p.el.classList.add('aparece'); });
     bloques.push({ el: d, tipo: 'regalos' });
-    var k = -2;
+    var k = 0, n = previos.length;
     pasos.push({ hacer: function () {
       cursor = d;
-      if (k === -2) { k = -1; if (portada) { cursor = portada; portada.classList.add('on'); sfx.foto(); return { ms: 1800 }; } }
-      if (k === -1) { k = 0; if (cif) { cif.style.opacity = '1'; sfx.brillo(); return { ms: 1300 }; } }
-      if (k < items.length) { cursor = items[k]; items[k].classList.add('on'); sfx.nota(k); k++; return { ms: 1100 }; }
+      if (k < n) {
+        var p = previos[k++]; cursor = p.el; p.el.classList.add('on');
+        if (p.brillo) sfx.brillo(); else if (!p.mudo) sfx.foto(true);
+        return { ms: p.ms };
+      }
+      var j = k - n;
+      if (j < items.length) { cursor = items[j]; items[j].classList.add('on'); sfx.nota(j); k++; return { ms: 1100 }; }
       return { ms: 600, listo: true };
-    }, todo: function () { if (portada) portada.classList.add('on'); if (cif) cif.style.opacity = '1'; items.forEach(function (i) { i.classList.add('on'); }); } });
+    }, todo: function () { previos.forEach(function (p) { p.el.classList.add('on'); }); items.forEach(function (i) { i.classList.add('on'); }); } });
   }
 
   var armada = false;

@@ -131,20 +131,27 @@ def main():
                 yield caja
             for g in (caja.get("lista") or []):
                 yield g
+    def embeber(src):
+        src = str(src or "")
+        if not src or a.sin_embeber or re.match(r"^(data:|https?:)", src):
+            return src
+        local = src if os.path.isabs(src) else os.path.join(base, src)
+        if not os.path.isfile(local):
+            avisos.append("no encontré la foto '%s'" % src)
+            return src
+        try:
+            return foto_embebida(local, min(a.lado, 900))
+        except Exception as e:
+            avisos.append("salteé %s (%s)" % (os.path.basename(src), e.__class__.__name__))
+            return ""
+
     for g in con_fotos():
-        for clave in ("foto", "fotoAtras"):
-            src = str(g.get(clave) or "")
-            if not src or a.sin_embeber or re.match(r"^(data:|https?:)", src):
-                continue
-            local = src if os.path.isabs(src) else os.path.join(base, src)
-            if os.path.isfile(local):
-                try:
-                    g[clave] = foto_embebida(local, min(a.lado, 900))
-                except Exception as e:
-                    avisos.append("salteé %s (%s)" % (os.path.basename(src), e.__class__.__name__))
-                    g[clave] = ""
-            else:
-                avisos.append("no encontré la foto de tarjeta '%s'" % src)
+        for clave in ("foto", "fotoAtras", "fotos"):
+            v = g.get(clave)
+            if isinstance(v, list):
+                g[clave] = [x for x in (embeber(f) for f in v) if x]
+            elif v:
+                g[clave] = embeber(v)
 
     musica = datos.get("musica") or {}
     arch = str(musica.get("archivo") or "")
